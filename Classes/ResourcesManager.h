@@ -12,4 +12,5 @@ public:
     ~ResourcesManager();
     
     shared_ptr<gObject> getObject();
+
 };

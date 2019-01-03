@@ -18,9 +18,9 @@ ResourcesManager::~ResourcesManager()
     
 }
 
-shared_ptr<gObject> getObject()
+shared_ptr<gObject> ResourcesManager::getObject()
 {
-    shared_ptr<gObject> obj = make_shared<gObject>();
+    shared_ptr<gObject> obj = make_shared<gObject>("Square.png");
     
     
     return obj;

@@ -7,9 +7,10 @@ class gObject
 protected:
     cocos2d::Sprite* _sprite;
     
-    gObject(const char* path);
 public:
     gObject();
+	gObject(const char* path);
+
     virtual ~gObject();
     cocos2d::Sprite* getSprite();
   

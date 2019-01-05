@@ -5,9 +5,10 @@ namespace cst
 
 }
 
-namespace entity
+namespace object
 {
-    const string basic_square = "Square.png";
+    const string CIRCLE = "Circle.png";
+    const string HOLE = "HoleTest.png";
 }
 
 

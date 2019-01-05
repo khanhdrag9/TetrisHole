@@ -1,19 +1,22 @@
 #include "Skill.h"
 #include "Board.h"
+#include "Hole.h"
 
-Suck::Suck()
+Skill::Skill(const shared_ptr<Hole>& hole):
+    _hole(hole)
 {
 }
 
-Suck::Suck(const Vec2& pos)
+void Skill::use()
 {
-	_posSuck = Vec2(pos);
 }
 
-void Suck::use(shared_ptr<Board>& board)
+//Suck
+void Suck::use()
 {
-	for (int i = 0; i < board->_listObject.size(); i++)
+    int numObj = (int)_hole->_boardParrent->_listObject.size();
+	for (int i = 0; i < numObj; i++)
 	{
-
+        
 	}
 }

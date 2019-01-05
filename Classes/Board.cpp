@@ -1,15 +1,25 @@
 #include "Board.h"
 #include "Grid.h"
 #include "Hole.h"
+#include "Object.h"
 
 Board::Board():
-	_hole(nullptr)
+	_hole(nullptr),
+    _parrentObject(nullptr),
+    _representHole(nullptr)
 {
 }
 
 Board::Board(const int& row, const int& col)
 {
 	init(row, col);
+}
+
+Board::~Board()
+{
+    CC_SAFE_DELETE(_parrentObject);
+    _hole = nullptr;
+    _representHole = nullptr;
 }
 
 void Board::init(const int& row, const int& col)
@@ -52,6 +62,8 @@ void Board::update(float dt)
 void Board::collectObject(const shared_ptr<gObject>& object)
 {
 	_listObject.push_back(object);
+    if(_parrentObject)
+        _parrentObject->addChild(object->getSprite());
 }
 
 void Board::setHole(const shared_ptr<Hole>& hole)
@@ -63,4 +75,51 @@ void Board::setHole(const shared_ptr<Hole>& hole)
 void Board::setHoleSkill(skill typeSkill)
 {
 	if (_hole)_hole->setSkill(typeSkill);
+}
+
+void Board::setRepresentHole(const shared_ptr<gObject>& obj)
+{
+    if(_representHole)
+    {
+        _representHole->getSprite()->retain();
+        _representHole->getSprite()->removeFromParentAndCleanup(true);
+        _representHole->getSprite()->autorelease();
+    }
+    
+    _representHole = obj;
+    _parrentObject->addChild(_representHole->getSprite());
+}
+
+void Board::setNode(Node* node)
+{
+    //release all object from node
+    if(_parrentObject)
+    {
+        for(auto& o : _listObject)
+        {
+            o->getSprite()->retain();
+            o->getSprite()->removeFromParentAndCleanup(true);
+            o->getSprite()->autorelease();
+        }
+    }
+    
+    if(_representHole)
+    {
+        _representHole->getSprite()->retain();
+        _representHole->getSprite()->removeFromParentAndCleanup(true);
+        _representHole->getSprite()->autorelease();
+    }
+    
+    //set object to new node
+    _parrentObject = node;
+    for(auto& o : _listObject)
+    {
+        _parrentObject->addChild(o->getSprite());
+    }
+    
+    if(_representHole)
+    {
+        _parrentObject->addChild(_representHole->getSprite());
+    }
+    
 }

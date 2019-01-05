@@ -8,6 +8,7 @@ class Skill;
 class Hole : public enable_shared_from_this<Hole>
 {
 	friend class Board;
+    friend class Suck;
 
 
 	Node* _spriteNode;

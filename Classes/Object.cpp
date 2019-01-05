@@ -13,7 +13,7 @@ gObject::gObject()
 
 gObject::~gObject()
 {
-    
+    CC_SAFE_DELETE(_sprite);
 }
 
 cocos2d::Sprite* gObject::getSprite()

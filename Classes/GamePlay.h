@@ -14,12 +14,16 @@ public:
 
 private:
 	shared_ptr<Board> _board;
-
+    
+    
+    Size _screenSize;
+    Vec2 _origin;
 
 private:
 	void initBoard();
+    void initObjectStart();
 	void initSchedule();
 
 
-	void update(float dt);
+    void update(float dt)  override;
 };

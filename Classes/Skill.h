@@ -2,18 +2,25 @@
 #include "Header.h"
 
 class Board;
+class Hole;
 
 class Skill
 {
+protected:
+    shared_ptr<Hole> _hole;
+    
+    Skill(){}
+    Skill(const shared_ptr<Hole>& hole);
+    
 public:
-	virtual void use(shared_ptr<Board>& board) = 0;
+    virtual void use();
 };
 
 class Suck : public Skill
 {
-	Vec2 _posSuck;
+    
 public:
-	Suck();
-	Suck(const Vec2& pos);
-	void use(shared_ptr<Board>& board) override;
+    Suck(){}
+    Suck(const shared_ptr<Hole>& hole) : Skill(hole){}
+	void use() override;
 };

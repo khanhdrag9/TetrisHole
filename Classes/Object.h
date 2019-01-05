@@ -1,5 +1,5 @@
 #pragma once
-#include "cocos2d.h"
+#include "Header.h"
 
 class gObject
 {
@@ -9,6 +9,7 @@ protected:
     
 public:
     gObject();
+    gObject(shared_ptr<gObject> obj);
 	gObject(const char* path);
 
     virtual ~gObject();
@@ -16,4 +17,5 @@ public:
   
     
     friend class ResourcesManager;
+    friend class GObjectManager;
 };

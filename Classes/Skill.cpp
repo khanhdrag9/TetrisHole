@@ -24,10 +24,13 @@ void Suck::use()
     auto listObject = _hole->_boardParrent->_listObject;
 	for (int i = 0; i < numObj; i++)
 	{
-        Vec2 holePos = _hole->_boardParrent->_representHole->getSprite()->getPosition();
-        if(listObject[i] && listObject[i]->getSprite()->getNumberOfRunningActions() == 0)
+        if(_hole->_boardParrent->_representHole)
         {
-            listObject[i]->getSprite()->runAction(MoveTo::create(3.f, holePos));
+            Vec2 holePos = _hole->_boardParrent->_representHole->getSprite()->getPosition();
+            if(listObject[i] && listObject[i]->getSprite()->getNumberOfRunningActions() == 0)
+            {
+                listObject[i]->getSprite()->runAction(MoveTo::create(3.f, holePos));
+            }
         }
 	}
 }

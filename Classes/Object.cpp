@@ -11,6 +11,11 @@ gObject::gObject()
     
 }
 
+gObject::gObject(shared_ptr<gObject> obj)
+{
+    _sprite = obj->_sprite;
+}
+
 gObject::~gObject()
 {
     CC_SAFE_DELETE(_sprite);

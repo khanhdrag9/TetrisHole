@@ -48,7 +48,7 @@ void GamePlay::initObjectStart()
 {
     auto a = ResourcesManager::getInstance()->getObject(object::CIRCLE);
     a->getSprite()->setScale(0.1);
-    a->getSprite()->setPosition(300, 500);
+    a->getSprite()->setPosition(300, _screenSize.height - 100);
     _board->collectObject(a);
     
     

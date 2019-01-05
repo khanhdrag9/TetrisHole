@@ -23,6 +23,4 @@ public:
 	void useSkill();
 	void setSkill(const skill skill);
 
-	Vec2 getPosition() const { return _spriteNode->getPosition(); }
-
 };

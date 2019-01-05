@@ -55,7 +55,9 @@ void Board::initGrid(const int& row, const int& col)
 void Board::update(float dt)
 {
 	if (_hole)
-		_hole->useSkill();
+    {
+        _hole->useSkill();
+    }
 
 }
 
@@ -88,6 +90,7 @@ void Board::setRepresentHole(const shared_ptr<gObject>& obj)
     
     _representHole = obj;
     _parrentObject->addChild(_representHole->getSprite());
+    _hole->_spriteNode->setPosition(_representHole->getSprite()->getPosition());
 }
 
 void Board::setNode(Node* node)
@@ -101,13 +104,20 @@ void Board::setNode(Node* node)
             o->getSprite()->removeFromParentAndCleanup(true);
             o->getSprite()->autorelease();
         }
-    }
-    
-    if(_representHole)
-    {
-        _representHole->getSprite()->retain();
-        _representHole->getSprite()->removeFromParentAndCleanup(true);
-        _representHole->getSprite()->autorelease();
+        
+        if(_representHole)
+        {
+            _representHole->getSprite()->retain();
+            _representHole->getSprite()->removeFromParentAndCleanup(true);
+            _representHole->getSprite()->autorelease();
+        }
+        
+        if(_hole)
+        {
+            _hole->_spriteNode->retain();
+            _hole->_spriteNode->removeFromParentAndCleanup(true);
+            _hole->_spriteNode->autorelease();
+        }
     }
     
     //set object to new node
@@ -120,6 +130,11 @@ void Board::setNode(Node* node)
     if(_representHole)
     {
         _parrentObject->addChild(_representHole->getSprite());
+    }
+    
+    if(_hole)
+    {
+        _parrentObject->addChild(_hole->_spriteNode);
     }
     
 }

@@ -10,9 +10,11 @@ protected:
     shared_ptr<Hole> _hole;
     
     Skill(){}
-    Skill(const shared_ptr<Hole>& hole);
+    Skill(const shared_ptr<Hole> hole);
     
 public:
+    virtual ~Skill();
+    
     virtual void use();
 };
 

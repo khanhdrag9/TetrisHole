@@ -22,7 +22,7 @@ void Hole::useSkill()
 {
 	if (_skill && _boardParrent)
 	{
-		_skill->use();
+        this->_skill->use();
 	}
 }
 

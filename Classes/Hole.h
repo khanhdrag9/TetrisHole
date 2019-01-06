@@ -21,5 +21,5 @@ public:
 	virtual ~Hole();
 
 	void useSkill(float dt);
-	void setSkill(const skill skill);
+	void setSkill(const skill skill, std::function<void()> callback = nullptr);
 };

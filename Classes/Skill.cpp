@@ -3,8 +3,9 @@
 #include "Hole.h"
 #include "Object.h"
 
-Skill::Skill(const shared_ptr<Hole> hole):
-    _hole(hole)
+Skill::Skill(const shared_ptr<Hole> hole, std::function<void()> callback):
+    _hole(hole),
+    _callback(callback)
 {
 }
 
@@ -36,37 +37,51 @@ void Suck::use(float dt)
     auto listObject = _hole->_boardParrent->_listObject;
 	for (int i = 0; i < numObj; i++)
 	{
+        auto obj = listObject[i];
         if(_hole->_boardParrent->_representHole && listObject[i])
         {
-//            Vec2 holePos = _hole->_boardParrent->_representHole->getSprite()->getPosition();
-//            if(listObject[i] && listObject[i]->getSprite()->getNumberOfRunningActions() == 0)
-//            {
-//                listObject[i]->getSprite()->runAction(MoveTo::create(3.f, holePos));
-//                listObject[i]->getSprite()->runAction(Follow::create(_hole->_boardParrent->getRepresentHole()->getSprite()));
-//            }
-            thread action([this](shared_ptr<gObject> obj, float dt){
+            if(listObject[i]->getStatus() == gObject::status::MOVING)
+            {
+                thread action([this](shared_ptr<gObject> obj, float dt){
+
+                    mtx.lock();
+                    auto speed = _speed;
+                    auto me = obj->getSprite()->getPosition();
+                    auto target = _hole->_boardParrent->_representHole->getSprite()->getPosition();
+                    auto diff = target - obj->getSprite()->getPosition();
+                    auto change = diff.getNormalized() * speed * dt;
+                    if(diff.length() > change.length())
+                    {
+                        obj->getSprite()->setPosition(me + change);
+                    }
+                    else
+                    {
+                        obj->getSprite()->setPosition(target);
+                        if(_callback && _canCB)
+                        {
+                            _callback();
+                            _canCB = false;
+                        }
+                    }
+                    
+                    mtx.unlock();
+                }, listObject[i], dt);
                 
-                mtx.lock();
-                auto speed = _speed;
-                auto me = obj->getSprite()->getPosition();
-                auto target = _hole->_boardParrent->_representHole->getSprite()->getPosition();
-                auto diff = target - obj->getSprite()->getPosition();
-                auto change = diff.getNormalized() * speed * dt;
-                if(diff.length() > change.length())
-                {
-                    obj->getSprite()->setPosition(me + change);
-                }
-                else
-                {
-                    obj->getSprite()->setPosition(target);
-                }
+                if(action.joinable())
+                    action.join();
+                //action.detach();
                 
-                mtx.unlock();
-            }, listObject[i], dt);
-            
-            if(action.joinable())
-                action.join();
-            //action.detach();
+            }
+            else if(listObject[i]->getStatus() == gObject::status::NONE)
+            {
+                
+                
+            }
+            else if(listObject[i]->getStatus() == gObject::status::COLLISION)
+            {
+                
+            }
         }
+        
 	}
 }

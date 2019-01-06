@@ -65,6 +65,7 @@ void Board::update(float dt)
 
 void Board::collectObject(const shared_ptr<gObject>& object)
 {
+    object->getSprite()->setTag((int)_listObject.size());
 	_listObject.push_back(object);
     if(_parrentObject)
         _parrentObject->addChild(object->getSprite());
@@ -76,9 +77,9 @@ void Board::setHole(const shared_ptr<Hole>& hole)
 	_hole->_boardParrent = shared_from_this();
 }
 
-void Board::setHoleSkill(skill typeSkill)
+void Board::setHoleSkill(skill typeSkill, std::function<void()> callback)
 {
-	if (_hole)_hole->setSkill(typeSkill);
+	if (_hole)_hole->setSkill(typeSkill, callback);
 }
 
 void Board::setRepresentHole(const shared_ptr<gObject>& obj)
@@ -91,6 +92,7 @@ void Board::setRepresentHole(const shared_ptr<gObject>& obj)
     }
     
     _representHole = obj;
+    _representHole->getSprite()->setTag(-2);
     _parrentObject->addChild(_representHole->getSprite());
     _hole->_spriteNode->setPosition(_representHole->getSprite()->getPosition());
 }

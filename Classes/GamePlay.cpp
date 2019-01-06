@@ -10,7 +10,8 @@
 GamePlay::GamePlay():
     _board(nullptr),
     _objMgr(nullptr),
-    _phyMgr(nullptr)
+    _phyMgr(nullptr),
+    _isCreated(true)
 {
     
 }
@@ -45,14 +46,25 @@ bool GamePlay::init()
 
 	initBoard();
     initObjectStart();
-	initSchedule();
+    initListeners();
+    initSchedule();
 
     return true;
 }
 
 void GamePlay::update(float dt)
 {
-	if (_board) _board->update(dt);
+    if(_isCreated)
+    {
+        createCircle(true);
+        
+        _isCreated = false;
+    }
+    
+	if (_board)
+    {
+        _board->update(dt);
+    }
 
 }
 
@@ -62,18 +74,23 @@ void GamePlay::initBoard()
     _board->setNode(this);
 
     _board->setHole(make_shared<Hole>());
-    _board->setHoleSkill(skill::stuck);
+    
+    std::function<void()> cb = [this](){
+        this->createCircle(true);
+    };
+    _board->setHoleSkill(skill::stuck, cb);
 }
 
 void GamePlay::initPhysicsWorldSetting(PhysicsWorld* world)
 {
     _phyMgr = make_unique<PhysicsManager>(world);
-    _phyMgr->addPhysicsForObject(_board->getRepresentHole(), false, shape::CIRCLE);
     
-    for(auto& obj : _board->getListObjects())
-    {
-        _phyMgr->addPhysicsForObject(obj, false);
-    }
+   // _phyMgr->addPhysicsForObject(_board->getRepresentHole(), false, shape::CIRCLE);
+    
+//    for(auto& obj : _board->getListObjects())
+//    {
+//        _phyMgr->addPhysicsForObject(obj, true, shape::CIRCLE);
+//    }
     
     
 }
@@ -82,12 +99,9 @@ void GamePlay::initObjectStart()
 {
     _objMgr = make_unique<GObjectManager>();
     
-    auto a = _objMgr->createCircle();
-    a->getObject()->getSprite()->setScale(0.1);
-    a->getObject()->getSprite()->setPosition(300, _screenSize.height - 100);
-    _board->collectObject(a->getObject());
+    //createCircle(true);
 
-
+    //init hole
     auto hole = ResourcesManager::getInstance()->getObject(object::HOLE);
     hole->getSprite()->setScale(0.3);
     hole->getSprite()->setPosition(_screenSize.width / 2.f + _origin.x, _screenSize.height / 2.f + _origin.y);
@@ -100,11 +114,34 @@ void GamePlay::initObjectStart()
 void GamePlay::initListeners()
 {
     auto physListener = EventListenerPhysicsContact::create();
-    physListener->onContactBegin = [this](PhysicsContact& contact){ return _phyMgr->onContactBegin(contact); };
+    physListener->onContactBegin = [this](PhysicsContact& contact){
+        
+        int result = _phyMgr->onContactBegin(contact, _board);
+        this->createCircle(true);
+        return result;
+    };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(physListener, this);
 }
 
 void GamePlay::initSchedule()
 {
 	this->scheduleUpdate();
+}
+
+
+void GamePlay::createCircle(bool up)
+{
+    //set pos at down screen or up screen
+    Vec2 pos = Vec2(_screenSize.width / 2.f + _origin.x, 0 + _origin.y);
+    if(up) pos.y = _screenSize.height + _origin.y;
+    
+    //calculate scale for resolution
+    float scale = 0.1f;
+    
+    //create circle
+    auto cir = _objMgr->createCircle();
+    cir->getObject()->getSprite()->setScale(scale);
+    cir->getObject()->getSprite()->setPosition(pos);
+    _board->collectObject(cir->getObject());
+    _phyMgr->addPhysicsForObject(cir->getObject(), true);
 }

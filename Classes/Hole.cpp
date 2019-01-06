@@ -26,11 +26,11 @@ void Hole::useSkill(float dt)
 	}
 }
 
-void Hole::setSkill(const skill skill)
+void Hole::setSkill(const skill skill, std::function<void()> callback)
 {
 	if (skill == skill::stuck)
 	{
-		_skill = make_unique<Suck>(shared_from_this());
+		_skill = make_unique<Suck>(shared_from_this(), callback);
 	}
 
 }

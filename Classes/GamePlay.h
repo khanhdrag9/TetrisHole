@@ -22,8 +22,12 @@ private:
     unique_ptr<GObjectManager> _objMgr;
     unique_ptr<PhysicsManager> _phyMgr;
     
+    bool _isCreated;
+    
     Size _screenSize;
     Vec2 _origin;
+    
+
 private:
 	void initBoard();
     void initObjectStart();
@@ -31,6 +35,7 @@ private:
     void initListeners();
 	void initSchedule();
 
-
+    void createCircle(bool up);
+    
     void update(float dt)  override;
 };

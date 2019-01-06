@@ -27,6 +27,7 @@ void GObjectManager::init()
 
 shared_ptr<Circle> GObjectManager::createCircle()
 {
+    _releaseCir = nullptr;
     shared_ptr<gObject> obj = ResourcesManager::getInstance()->getObject(object::CIRCLE);
     _releaseCir = make_shared<Circle>(obj);
     

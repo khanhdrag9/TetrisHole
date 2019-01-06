@@ -21,10 +21,14 @@ public:
 	void init(const int& row, const int& col);
 	void initGrid(const int& row, const int& col);
 	void collectObject(const shared_ptr<gObject>& object);
+    
 	void setHole(const shared_ptr<Hole>& hole);
 	void setHoleSkill(const skill typeSkill);
     void setRepresentHole(const shared_ptr<gObject>& obj);
     void setNode(Node* node);
+    
+    shared_ptr<gObject> getRepresentHole(){return _representHole;}
+    vector<shared_ptr<gObject>> getListObjects(){return _listObject;}
 
 	void update(float dt);
 

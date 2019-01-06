@@ -18,11 +18,11 @@ Hole::~Hole()
     _skill = nullptr;
 }
 
-void Hole::useSkill()
+void Hole::useSkill(float dt)
 {
 	if (_skill && _boardParrent)
 	{
-        this->_skill->use();
+        this->_skill->use(dt);
 	}
 }
 

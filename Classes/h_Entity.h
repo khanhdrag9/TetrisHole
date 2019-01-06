@@ -11,6 +11,11 @@ namespace object
     const string HOLE = "HoleTest.png";
 }
 
+enum class shape : int
+{
+    CIRCLE,
+    RECT
+};
 
 enum class skill : int
 {

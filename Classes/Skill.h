@@ -7,6 +7,7 @@ class Hole;
 class Skill
 {
 protected:
+    mutex mtx;
     shared_ptr<Hole> _hole;
     
     Skill(){}
@@ -15,14 +16,16 @@ protected:
 public:
     virtual ~Skill();
     
-    virtual void use();
+    virtual void use(float dt);
+    virtual void active(void* value);
 };
 
 class Suck : public Skill
 {
-    
+    float _speed;
 public:
     Suck(){}
     Suck(const shared_ptr<Hole>& hole) : Skill(hole){}
-	void use() override;
+	void use(float dt) override;
+    void active(void* value) override;
 };

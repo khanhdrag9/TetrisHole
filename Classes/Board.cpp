@@ -1,6 +1,7 @@
 #include "Board.h"
 #include "Grid.h"
 #include "Hole.h"
+#include "Skill.h"
 #include "Object.h"
 
 Board::Board():
@@ -56,7 +57,8 @@ void Board::update(float dt)
 {
 	if (_hole)
     {
-        _hole->useSkill();
+        _hole->_skill->active(static_cast<void*>(new float(100.f)));
+        _hole->useSkill(dt);
     }
 
 }

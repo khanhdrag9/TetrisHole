@@ -20,7 +20,6 @@ public:
 	Hole();
 	virtual ~Hole();
 
-	void useSkill();
+	void useSkill(float dt);
 	void setSkill(const skill skill);
-
 };

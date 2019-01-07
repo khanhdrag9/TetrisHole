@@ -59,10 +59,9 @@ void Suck::use(float dt)
                     else
                     {
                         obj->getSprite()->setPosition(target);
-                        if(_callback && _canCB)
+                        if(_callback)
                         {
                             _callback();
-                            _canCB = false;
                         }
                     }
                     

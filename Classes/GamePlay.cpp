@@ -76,7 +76,8 @@ void GamePlay::initBoard()
     _board->setHole(make_shared<Hole>());
     
     std::function<void()> cb = [this](){
-        this->createCircle(false);
+		if(_board->getListObjects().size() <= 1)
+			_isCreated = true;
     };
     _board->setHoleSkill(skill::stuck, cb);
 }

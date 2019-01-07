@@ -32,7 +32,6 @@ private:
 private:
 	void initBoard();
     void initObjectStart();
-    void initPhysicsWorldSetting(PhysicsWorld* world);
     void initListeners();
 	void initSchedule();
 

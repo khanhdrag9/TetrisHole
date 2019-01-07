@@ -25,6 +25,11 @@ public:
 	{
 		return _grid[index];
 	}
+    
+    std::vector<T>& at(const int& index)
+    {
+        return _grid[index];
+    }
 
 	const pos& sizePos() const { return _sizePos; }
 };

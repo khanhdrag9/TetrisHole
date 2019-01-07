@@ -6,6 +6,7 @@
 #include "Circle.h"
 #include "Templates.h"
 #include "PhysicsManager.h"
+#include "Grid.h"
 
 GamePlay::GamePlay():
     _board(nullptr),
@@ -25,11 +26,8 @@ GamePlay::~GamePlay()
 
 Scene* GamePlay::createScene()
 {
-    Scene* scene = Scene::createWithPhysics();
-    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-    
+    Scene* scene = Scene::create();
     GamePlay* layer = GamePlay::create();
-    layer->initPhysicsWorldSetting(scene->getPhysicsWorld());
     
     scene->addChild(layer);
     
@@ -70,7 +68,24 @@ void GamePlay::update(float dt)
 
 void GamePlay::initBoard()
 {
-	_board = make_shared<Board>();
+	_board = make_shared<Board>(ROW, COL);
+    
+#if ENABLE_DEBUG_GRID
+    int i = 0;
+    for (int r = 0; r < _board->getGridPos().sizePos().row; r++)
+    {
+        for (int c = 0; c < _board->getGridPos().sizePos().col; c++)
+        {
+            Vec2 pos = _board->getGridPos()[r][c];
+            Label* t = Label::createWithTTF(to_string(i), FONT_ARIAL, 13);
+            t->setPosition(_origin + pos);
+            t->setColor(Color3B::YELLOW);
+            this->addChild(t);
+            //i++;
+        }
+    }
+#endif
+    
     _board->setNode(this);
 
     _board->setHole(make_shared<Hole>());
@@ -82,20 +97,6 @@ void GamePlay::initBoard()
     _board->setHoleSkill(skill::stuck, cb);
 }
 
-void GamePlay::initPhysicsWorldSetting(PhysicsWorld* world)
-{
-    _phyMgr = make_unique<PhysicsManager>(world);
-    
-   // _phyMgr->addPhysicsForObject(_board->getRepresentHole(), false, shape::CIRCLE);
-    
-//    for(auto& obj : _board->getListObjects())
-//    {
-//        _phyMgr->addPhysicsForObject(obj, true, shape::CIRCLE);
-//    }
-    
-    
-}
-
 void GamePlay::initObjectStart()
 {
     _objMgr = make_unique<GObjectManager>();
@@ -103,30 +104,12 @@ void GamePlay::initObjectStart()
     //createCircle(true);
 
     //init hole
-    auto hole = ResourcesManager::getInstance()->getObject(object::HOLE);
-    hole->getSprite()->setScale(0.3);
-    hole->getSprite()->setPosition(_screenSize.width / 2.f + _origin.x, _screenSize.height / 2.f + _origin.y);
-    hole->getSprite()->runAction(RepeatForever::create(RotateBy::create(0.01, 10)));
-    hole->getSprite()->setOpacity(75);
-    _board->setRepresentHole(hole);
 
 }
 
 void GamePlay::initListeners()
 {
-    auto physListener = EventListenerPhysicsContact::create();
-    physListener->onContactBegin = [this](PhysicsContact& contact){
-        
-		int flag1, flag2;
-        int result = _phyMgr->onContactBegin(contact, _board, flag1, flag2);
-
-		int tagCurCir = _objMgr->getCurrentCirTag();
-		if (flag1 == tagCurCir || flag2 == tagCurCir)
-			_isCreated = true;
-
-        return result;
-    };
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(physListener, this);
+    
 }
 
 void GamePlay::initSchedule()
@@ -138,18 +121,12 @@ void GamePlay::initSchedule()
 void GamePlay::createCircle(bool up)
 {
     //set pos at down screen or up screen
-    Vec2 pos = Vec2(_screenSize.width / 2.f + _origin.x, 0 + _origin.y);
-    if(up) pos.y = _screenSize.height + _origin.y;
-	CCLOG("Pos create : %f-%f", pos.x, pos.y);
+    Vec2 pos;
     //calculate scale for resolution
     float scale = 0.1f;
     
     //create circle
-    auto cir = _objMgr->createCircle();
-    cir->getObject()->getSprite()->setScale(scale);
-    cir->getObject()->getSprite()->setPosition(pos);
-    _board->collectObject(cir->getObject());
-    _phyMgr->addPhysicsForObject(cir->getObject(), true);
+    
 }
 
 void GamePlay::deleteCircle(list<gObject> listObj)

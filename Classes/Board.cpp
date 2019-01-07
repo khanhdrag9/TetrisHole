@@ -1,5 +1,4 @@
 #include "Board.h"
-#include "Grid.h"
 #include "Hole.h"
 #include "Skill.h"
 #include "Object.h"
@@ -11,7 +10,10 @@ Board::Board():
 {
 }
 
-Board::Board(const int& row, const int& col)
+Board::Board(const int& row, const int& col):
+_hole(nullptr),
+_parrentObject(nullptr),
+_representHole(nullptr)
 {
 	init(row, col);
 }
@@ -25,30 +27,56 @@ Board::~Board()
 
 void Board::init(const int& row, const int& col)
 {
-	Size sz = Director::getInstance()->getVisibleSize();
+    Size sz = Director::getInstance()->getVisibleSize();
+ //   Size sz = Director::getInstance()->getWinSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-	float side = sz.width > sz.height ? sz.width : sz.height;
 
 	initGrid(row, col);
 
 	//for position in gridPosition
-	/*float startX = 0.f;
-	float startY = 0.f;
+    {
+        float sizeForW = float(sz.width) / (float)(col);
+        float sizeForH = 2 * float(sz.height) / (float)(row);
+        
+        if(sizeForW < sizeForH)
+        {
+            _sideBox = sizeForW;
+        }
+        else if(sizeForW >= sizeForH)
+        {
+            _sideBox = sizeForH;
+        }
+    }
+    _maxW = _sideBox * col;
+    _maxH = _sideBox * row;
+    
+    float increValueH = _sideBox / 2.f;
+    float increValueW = _sideBox;
+    
+    float startX1 = _sideBox / 2.f;
+    float startX2 = _sideBox;
+    float px = startX1;
+    
+    float py = _sideBox / 2.f;
 
-	for (int r = 0; r < _gridPos->sizePos().row; r++)
-	{
-		for (int c = 0; c < _gridPos->sizePos().col; c++)
-		{
-
-		}
-	}*/
+    for (int r = 0; r < _gridPos.sizePos().row; r++)
+    {
+        for (int c = 0; c < _gridPos.sizePos().col; c++)
+        {
+            _gridPos[r][c] = Vec2(px, py);
+            px += increValueW;
+        }
+        py += increValueH;
+        if(r%2==0)px = startX2;
+        else px = startX1;
+    }
+    
 }
 
 void Board::initGrid(const int& row, const int& col)
 {
 	//for Grid Position
-	//_gridPos = make_unique<GridPos>(row, col);
+	_gridPos = GridPos(row, col);
 
 	
 }
@@ -67,8 +95,7 @@ void Board::collectObject(const shared_ptr<gObject>& object)
 {
     object->getSprite()->setTag((int)_listObject.size());
 	_listObject.push_back(object);
-    if(_parrentObject)
-        _parrentObject->addChild(object->getSprite());
+    
 }
 
 void Board::setHole(const shared_ptr<Hole>& hole)
@@ -84,61 +111,10 @@ void Board::setHoleSkill(skill typeSkill, std::function<void()> callback)
 
 void Board::setRepresentHole(const shared_ptr<gObject>& obj)
 {
-    if(_representHole)
-    {
-        _representHole->getSprite()->retain();
-        _representHole->getSprite()->removeFromParentAndCleanup(true);
-        _representHole->getSprite()->autorelease();
-    }
     
-    _representHole = obj;
-    _representHole->getSprite()->setTag(-2);
-    _parrentObject->addChild(_representHole->getSprite());
-    _hole->_spriteNode->setPosition(_representHole->getSprite()->getPosition());
 }
 
 void Board::setNode(Node* node)
 {
-    //release all object from node
-    if(_parrentObject)
-    {
-        for(auto& o : _listObject)
-        {
-            o->getSprite()->retain();
-            o->getSprite()->removeFromParentAndCleanup(true);
-            o->getSprite()->autorelease();
-        }
-        
-        if(_representHole)
-        {
-            _representHole->getSprite()->retain();
-            _representHole->getSprite()->removeFromParentAndCleanup(true);
-            _representHole->getSprite()->autorelease();
-        }
-        
-        if(_hole)
-        {
-            _hole->_spriteNode->retain();
-            _hole->_spriteNode->removeFromParentAndCleanup(true);
-            _hole->_spriteNode->autorelease();
-        }
-    }
-    
-    //set object to new node
-    _parrentObject = node;
-    for(auto& o : _listObject)
-    {
-        _parrentObject->addChild(o->getSprite());
-    }
-    
-    if(_representHole)
-    {
-        _parrentObject->addChild(_representHole->getSprite());
-    }
-    
-    if(_hole)
-    {
-        _parrentObject->addChild(_hole->_spriteNode);
-    }
     
 }

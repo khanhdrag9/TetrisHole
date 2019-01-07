@@ -49,3 +49,8 @@ void GObjectManager::setPositionForContainer(shared_ptr<Container>& ctn, Vec2& p
         ctn->getObject()->getSprite()->setPosition(pos);
     }
 }
+
+int GObjectManager::getCurrentCirTag() const
+{
+	return _releaseCir->getObject()->getSprite()->getTag();
+}

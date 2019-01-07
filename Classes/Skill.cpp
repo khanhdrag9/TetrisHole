@@ -42,11 +42,13 @@ void Suck::use(float dt)
         {
             if(listObject[i]->getStatus() == gObject::status::MOVING)
             {
-                thread action([this](shared_ptr<gObject> obj, float dt){
+                /*thread action([this](shared_ptr<gObject> obj, float dt){
 
-                    mtx.lock();
+                    mtx.lock();*/
                     auto speed = _speed;
                     auto me = obj->getSprite()->getPosition();
+					CCLOG("Obj[%d] Pos: %f-%f", i, me.x, me.y);
+
                     auto target = _hole->_boardParrent->_representHole->getSprite()->getPosition();
                     auto diff = target - obj->getSprite()->getPosition();
                     auto change = diff.getNormalized() * speed * dt;
@@ -64,11 +66,11 @@ void Suck::use(float dt)
                         }
                     }
                     
-                    mtx.unlock();
+                /*    mtx.unlock();
                 }, listObject[i], dt);
                 
                 if(action.joinable())
-                    action.join();
+                    action.join();*/
                 //action.detach();
                 
             }

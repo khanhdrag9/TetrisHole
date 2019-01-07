@@ -14,7 +14,7 @@ public:
     Container(const shared_ptr<gObject>& obj);
     virtual ~Container();
     
-    shared_ptr<gObject> getObject(){return _object;}
+    shared_ptr<gObject>& getObject(){return _object;}
 };
 
 class Circle : public Container

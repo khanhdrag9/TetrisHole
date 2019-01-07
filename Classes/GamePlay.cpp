@@ -76,7 +76,7 @@ void GamePlay::initBoard()
     _board->setHole(make_shared<Hole>());
     
     std::function<void()> cb = [this](){
-        this->createCircle(true);
+        this->createCircle(false);
     };
     _board->setHoleSkill(skill::stuck, cb);
 }
@@ -116,8 +116,13 @@ void GamePlay::initListeners()
     auto physListener = EventListenerPhysicsContact::create();
     physListener->onContactBegin = [this](PhysicsContact& contact){
         
-        int result = _phyMgr->onContactBegin(contact, _board);
-        this->createCircle(true);
+		int flag1, flag2;
+        int result = _phyMgr->onContactBegin(contact, _board, flag1, flag2);
+
+		int tagCurCir = _objMgr->getCurrentCirTag();
+		if (flag1 == tagCurCir || flag2 == tagCurCir)
+			_isCreated = true;
+
         return result;
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(physListener, this);
@@ -134,7 +139,7 @@ void GamePlay::createCircle(bool up)
     //set pos at down screen or up screen
     Vec2 pos = Vec2(_screenSize.width / 2.f + _origin.x, 0 + _origin.y);
     if(up) pos.y = _screenSize.height + _origin.y;
-    
+	CCLOG("Pos create : %f-%f", pos.x, pos.y);
     //calculate scale for resolution
     float scale = 0.1f;
     

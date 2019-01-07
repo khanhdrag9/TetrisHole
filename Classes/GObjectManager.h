@@ -18,5 +18,5 @@ public:
     shared_ptr<Circle> createCircle();
     void setPositionForObject(shared_ptr<gObject>& obj, Vec2& pos);
     void setPositionForContainer(shared_ptr<Container>& ctn, Vec2& pos);
-    
+	int getCurrentCirTag() const;
 };

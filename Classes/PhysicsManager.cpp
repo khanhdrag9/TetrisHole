@@ -55,7 +55,7 @@ void PhysicsManager::addPhysicsForObject(const shared_ptr<gObject>& obj, bool dy
     }
 }
 
-bool PhysicsManager::onContactBegin(PhysicsContact& contact, shared_ptr<Board>& board, int& flag1, int& flag2, function<void()> callback)
+bool PhysicsManager::onContactBegin(PhysicsContact& contact, shared_ptr<Board>& board, int& flag1, int& flag2, function<void(list<gObject>)> callback)
 {
     flag1 = contact.getShapeA()->getBody()->getNode()->getTag();
     flag2 = contact.getShapeB()->getBody()->getNode()->getTag();
@@ -69,8 +69,11 @@ bool PhysicsManager::onContactBegin(PhysicsContact& contact, shared_ptr<Board>& 
         board->getListObjects()[flag2]->setStatus(gObject::status::COLLISION);
     }
 
-	if(callback)
-		callback();
+	if (callback && flag1 >= 0 && flag2 >= 0)
+	{
+		list<gObject> listObj = { board->getListObjects()[flag1], board->getListObjects()[flag2] };
+		callback(listObj);
+	}
     
     return true;
 }

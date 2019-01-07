@@ -76,7 +76,7 @@ void GamePlay::initBoard()
     _board->setHole(make_shared<Hole>());
     
     std::function<void()> cb = [this](){
-		if(_board->getListObjects().size() <= 1)
+		if(_board->getListObjects().size() <= 1)	//for first circle
 			_isCreated = true;
     };
     _board->setHoleSkill(skill::stuck, cb);
@@ -150,4 +150,9 @@ void GamePlay::createCircle(bool up)
     cir->getObject()->getSprite()->setPosition(pos);
     _board->collectObject(cir->getObject());
     _phyMgr->addPhysicsForObject(cir->getObject(), true);
+}
+
+void GamePlay::deleteCircle(list<gObject> listObj)
+{
+	CCLOG("Delelte Circle");
 }

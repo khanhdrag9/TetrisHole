@@ -5,6 +5,7 @@ class Board;
 class Hole;
 class GObjectManager;
 class PhysicsManager;
+class gObject;
 
 class GamePlay : public Layer
 {
@@ -36,6 +37,7 @@ private:
 	void initSchedule();
 
     void createCircle(bool up);
+	void deleteCircle(list<gObject> listObj);
     
     void update(float dt)  override;
 };

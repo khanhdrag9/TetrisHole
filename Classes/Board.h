@@ -16,6 +16,8 @@ class Board : public enable_shared_from_this<Board>
     float _sideBox;
     float _maxW;
     float _maxH;
+	float _col;
+	float _row;
 public:
 	Board();
 	Board(const int& row, const int& col);
@@ -25,13 +27,15 @@ public:
 	void initGrid(const int& row, const int& col);
 	void collectObject(const shared_ptr<gObject>& object);
     
-	void setHole(const shared_ptr<Hole>& hole);
+	void setHole(shared_ptr<Hole> hole);
 	void setHoleSkill(const skill typeSkill, std::function<void()> callback = nullptr);
+	void addToHole(shared_ptr<gObject> obj);	//add to node of hole without not change postion is shown in screen
     void setRepresentHole(const shared_ptr<gObject>& obj);
     void setNode(Node* node);
     
-    int getSideBox() const {return _sideBox; }
+    float getSideBox() const {return _sideBox; }
 	Size getSize() const { return Size(_maxW, _maxH); }
+	pos getRowCols() const { return pos(_row, _col); }
     shared_ptr<gObject> getRepresentHole(){return _representHole;}
     vector<shared_ptr<gObject>> getListObjects(){return _listObject;}
     GridPos getGridPos() const { return _gridPos; }

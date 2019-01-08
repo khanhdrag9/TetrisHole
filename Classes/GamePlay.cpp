@@ -8,6 +8,9 @@
 #include "PhysicsManager.h"
 #include "Grid.h"
 
+pos GamePlay::createUp = pos(ROW - 1, COL / 2);
+pos GamePlay::createDown = pos(0, COL / 2);
+
 GamePlay::GamePlay():
     _board(nullptr),
     _objMgr(nullptr),
@@ -69,18 +72,24 @@ void GamePlay::update(float dt)
 void GamePlay::initBoard()
 {
 	_board = make_shared<Board>(ROW, COL);
+	pos colrows = _board->getRowCols();
+	GamePlay::createUp = pos(colrows.row - 1, colrows.col / 2);
+	GamePlay::createDown = pos(0, colrows.col / 2);
     
 #if ENABLE_DEBUG_GRID
     int i = 0;
-    for (int r = 0; r < _board->getGridPos().sizePos().row; r++)
+    for (int r = 0; r < _board->getRowCols().row; r++)
     {
-        for (int c = 0; c < _board->getGridPos().sizePos().col; c++)
+        for (int c = 0; c < _board->getRowCols().col; c++)
         {
             Vec2 pos = _board->getGridPos()[r][c];
-            Label* t = Label::createWithTTF(to_string(i), FONT_ARIAL, 13);
-            t->setPosition(_origin + pos);
-            t->setColor(Color3B::YELLOW);
-            this->addChild(t);
+			if (pos != Vec2(0, 0))
+			{
+				Label* t = Label::createWithTTF(to_string(i), FONT_ARIAL, 13);
+				t->setPosition(_origin + pos);
+				t->setColor(Color3B::GRAY);
+				this->addChild(t);
+			}
             //i++;
         }
     }
@@ -91,8 +100,7 @@ void GamePlay::initBoard()
     _board->setHole(make_shared<Hole>());
     
     std::function<void()> cb = [this](){
-		if(_board->getListObjects().size() <= 1)	//for first circle
-			_isCreated = true;
+		
     };
     _board->setHoleSkill(skill::stuck, cb);
 
@@ -126,12 +134,28 @@ void GamePlay::initSchedule()
 void GamePlay::createCircle(bool up)
 {
     //set pos at down screen or up screen
-    Vec2 pos;
-    //calculate scale for resolution
-    float scale = 0.1f;
+	pos posCreate = GamePlay::createUp;
+	Vec2 realPos = _board->getGridPos()[1][posCreate.col];
+	
+	//create circle
+	auto cir = _objMgr->createCircle();
+	auto sprite = cir->getObject()->getSprite();
+	float scale = _board->getSideBox() / (float)(sprite->getContentSize().width);
+	sprite->setScale(scale);
+	sprite->setPosition(realPos);
     
-    //create circle
-    
+	this->addChild(sprite);
+
+
+	//for test
+	Vec2 realPos2 = _board->getGridPos()[2][posCreate.col + 1];	//to test
+	auto cir2 = _objMgr->createCircle();
+	auto sprite2 = cir2->getObject()->getSprite();
+	float scale2 = _board->getSideBox() / (float)(sprite2->getContentSize().width);
+	sprite2->setScale(scale2);
+	sprite2->setPosition(realPos2);
+
+	this->addChild(sprite2);
 }
 
 void GamePlay::deleteCircle(list<gObject> listObj)

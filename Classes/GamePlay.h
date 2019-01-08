@@ -18,6 +18,10 @@ public:
 
     GamePlay();
     virtual ~GamePlay();
+
+
+	static pos createUp;
+	static pos createDown;
 private:
 	shared_ptr<Board> _board;
     unique_ptr<GObjectManager> _objMgr;
@@ -28,7 +32,7 @@ private:
     Size _screenSize;
     Vec2 _origin;
     
-
+	
 private:
 	void initBoard();
     void initObjectStart();

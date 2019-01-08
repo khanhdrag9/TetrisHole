@@ -21,7 +21,7 @@ _status(status::MOVING)
 
 gObject::~gObject()
 {
-    CC_SAFE_DELETE(_sprite);
+	_sprite = nullptr;
 }
 
 cocos2d::Sprite* gObject::getSprite()

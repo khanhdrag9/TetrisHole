@@ -12,7 +12,6 @@ Board::Board():
 
 Board::Board(const int& row, const int& col):
 _hole(nullptr),
-_parrentObject(nullptr),
 _representHole(nullptr)
 {
 	init(row, col);
@@ -32,11 +31,13 @@ void Board::init(const int& row, const int& col)
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	initGrid(row, col);
+	_col = col;
+	_row = row;
 
 	//for position in gridPosition
     {
         float sizeForW = float(sz.width) / (float)(col);
-        float sizeForH = 2 * float(sz.height) / (float)(row);
+        float sizeForH = float(sz.height) / (float)(row);
         
         if(sizeForW < sizeForH)
         {
@@ -47,21 +48,24 @@ void Board::init(const int& row, const int& col)
             _sideBox = sizeForH;
         }
     }
+	float increValueH = sqrt(pow(_sideBox, 2) - pow(_sideBox / 2.f, 2));
+	_sideBox *= (increValueH / (float)_sideBox);
+
     _maxW = _sideBox * col;
-    _maxH = _sideBox * row / 2.f;
+    _maxH = _sideBox * row;
     
-    float increValueH = _sideBox / 2.f;
+	
     float increValueW = _sideBox;
     
     float startX1 = _sideBox / 2.f;
     float startX2 = _sideBox;
     float px = startX1;
     
-    float py = _sideBox / 2.f;
+    float py = increValueH;
 
-    for (int r = 0; r < _gridPos.sizePos().row; r++)
+    for (int r = 0; r < _row; r++)
     {
-        for (int c = 0; c < _gridPos.sizePos().col; c++)
+        for (int c = 0; c < _col; c++)
         {
             _gridPos[r][c] = Vec2(px, py);
             px += increValueW;
@@ -95,13 +99,16 @@ void Board::collectObject(const shared_ptr<gObject>& object)
 {
     object->getSprite()->setTag((int)_listObject.size());
 	_listObject.push_back(object);
-    
 }
 
-void Board::setHole(const shared_ptr<Hole>& hole)
+void Board::setHole(shared_ptr<Hole> hole)
 {
 	_hole = hole;
 	_hole->_boardParrent = shared_from_this();
+	if (_parrentObject && _hole->_spriteNode)
+	{
+		_parrentObject->addChild(_hole->_spriteNode);
+	}
 }
 
 void Board::setHoleSkill(skill typeSkill, std::function<void()> callback)
@@ -109,12 +116,17 @@ void Board::setHoleSkill(skill typeSkill, std::function<void()> callback)
 	if (_hole)_hole->setSkill(typeSkill, callback);
 }
 
+void Board::addToHole(shared_ptr<gObject> obj)
+{
+
+}
+
 void Board::setRepresentHole(const shared_ptr<gObject>& obj)
 {
-    
+	_representHole = obj;
 }
 
 void Board::setNode(Node* node)
 {
-    
+	_parrentObject = node;
 }

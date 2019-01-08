@@ -95,6 +95,11 @@ void GamePlay::initBoard()
 			_isCreated = true;
     };
     _board->setHoleSkill(skill::stuck, cb);
+
+	//set position for layer
+	Size boardSize = _board->getSize();
+	Vec2 posLayer = Vec2(_screenSize.width - boardSize.width, _screenSize.height - boardSize.height) / 2.f;
+	this->setPosition(posLayer + _origin);
 }
 
 void GamePlay::initObjectStart()

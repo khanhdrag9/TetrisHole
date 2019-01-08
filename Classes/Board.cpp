@@ -48,7 +48,7 @@ void Board::init(const int& row, const int& col)
         }
     }
     _maxW = _sideBox * col;
-    _maxH = _sideBox * row;
+    _maxH = _sideBox * row / 2.f;
     
     float increValueH = _sideBox / 2.f;
     float increValueW = _sideBox;

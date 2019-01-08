@@ -31,6 +31,7 @@ public:
     void setNode(Node* node);
     
     int getSideBox() const {return _sideBox; }
+	Size getSize() const { return Size(_maxW, _maxH); }
     shared_ptr<gObject> getRepresentHole(){return _representHole;}
     vector<shared_ptr<gObject>> getListObjects(){return _listObject;}
     GridPos getGridPos() const { return _gridPos; }

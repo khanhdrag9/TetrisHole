@@ -22,6 +22,8 @@ public:
 
 	static pos createUp;
 	static pos createDown;
+	static pos center;
+
 private:
 	shared_ptr<Board> _board;
     unique_ptr<GObjectManager> _objMgr;

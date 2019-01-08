@@ -10,6 +10,7 @@
 
 pos GamePlay::createUp = pos(ROW - 1, COL / 2);
 pos GamePlay::createDown = pos(0, COL / 2);
+pos GamePlay::center = pos(ROW / 2, COL / 2);
 
 GamePlay::GamePlay():
     _board(nullptr),
@@ -75,6 +76,7 @@ void GamePlay::initBoard()
 	pos colrows = _board->getRowCols();
 	GamePlay::createUp = pos(colrows.row - 1, colrows.col / 2);
 	GamePlay::createDown = pos(0, colrows.col / 2);
+	GamePlay::center = pos(colrows.row / 2, colrows.col / 2);
     
 #if ENABLE_DEBUG_GRID
     for (int r = 0; r < _board->getRowCols().row; r++)
@@ -87,6 +89,7 @@ void GamePlay::initBoard()
 				Label* t = Label::createWithTTF("o", FONT_ARIAL, _board->getSideBox() * 1.75f);
 				t->setPosition(_origin + pos);
 				t->setColor(Color3B::GRAY);
+				t->setOpacity(75.f);
 				this->addChild(t);
 			}
             //i++;
@@ -96,12 +99,17 @@ void GamePlay::initBoard()
     
     _board->setNode(this);
 
+	//hole
     _board->setHole(make_shared<Hole>());
-    
     std::function<void()> cb = [this](){
 		
     };
     _board->setHoleSkill(skill::stuck, cb);
+
+	auto holeRepre = ResourcesManager::getInstance()->getObject(object::HOLE);
+	holeRepre->getSprite()->setScale(0.2);
+	_board->setRepresentHole(holeRepre);
+	_board->setHolePos(GamePlay::center);
 
 	//set position for layer
 	Size boardSize = _board->getSize();

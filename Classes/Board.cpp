@@ -123,9 +123,49 @@ void Board::addToHole(shared_ptr<gObject> obj)
 void Board::setRepresentHole(const shared_ptr<gObject>& obj)
 {
 	_representHole = obj;
+
+	if (_hole && _representHole)
+	{
+		if (_parrentObject)
+		{
+			_parrentObject->addChild(_representHole->getSprite());
+		}
+		_representHole->getSprite()->setPosition(_hole->_spriteNode->getPosition());
+	}
+}
+
+void Board::setHolePos(const pos& p)
+{
+	if (_hole)
+	{
+		_hole->_spriteNode->setPosition(_gridPos[p.row][p.col]);
+	}
+	if (_representHole)
+	{
+		_representHole->getSprite()->setPosition(_gridPos[p.row][p.col]);
+	}
 }
 
 void Board::setNode(Node* node)
 {
 	_parrentObject = node;
+
+	Node* ptr;
+	if (_representHole && _parrentObject)
+	{
+		ptr = _representHole->getSprite();
+		ptr->retain();
+		ptr->removeFromParentAndCleanup(true);
+		ptr->autorelease();
+		_parrentObject->addChild(ptr);
+	}
+
+	if (_hole && _parrentObject)
+	{
+		ptr = _hole->_spriteNode;
+		ptr->retain();
+		ptr->removeFromParentAndCleanup(true);
+		ptr->autorelease();
+		_parrentObject->addChild(ptr);
+	}
 }

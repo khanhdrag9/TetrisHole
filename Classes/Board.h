@@ -31,6 +31,7 @@ public:
 	void setHoleSkill(const skill typeSkill, std::function<void()> callback = nullptr);
 	void addToHole(shared_ptr<gObject> obj);	//add to node of hole without not change postion is shown in screen
     void setRepresentHole(const shared_ptr<gObject>& obj);
+	void setHolePos(const pos& p);
     void setNode(Node* node);
     
     float getSideBox() const {return _sideBox; }

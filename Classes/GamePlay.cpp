@@ -77,7 +77,6 @@ void GamePlay::initBoard()
 	GamePlay::createDown = pos(0, colrows.col / 2);
     
 #if ENABLE_DEBUG_GRID
-    int i = 0;
     for (int r = 0; r < _board->getRowCols().row; r++)
     {
         for (int c = 0; c < _board->getRowCols().col; c++)
@@ -85,7 +84,7 @@ void GamePlay::initBoard()
             Vec2 pos = _board->getGridPos()[r][c];
 			if (pos != Vec2(0, 0))
 			{
-				Label* t = Label::createWithTTF(to_string(i), FONT_ARIAL, 13);
+				Label* t = Label::createWithTTF("o", FONT_ARIAL, _board->getSideBox() * 1.75f);
 				t->setPosition(_origin + pos);
 				t->setColor(Color3B::GRAY);
 				this->addChild(t);
@@ -135,7 +134,7 @@ void GamePlay::createCircle(bool up)
 {
     //set pos at down screen or up screen
 	pos posCreate = GamePlay::createUp;
-	Vec2 realPos = _board->getGridPos()[1][posCreate.col];
+	Vec2 realPos = _board->getGridPos()[posCreate.row][posCreate.col];
 	
 	//create circle
 	auto cir = _objMgr->createCircle();
@@ -148,7 +147,7 @@ void GamePlay::createCircle(bool up)
 
 
 	//for test
-	Vec2 realPos2 = _board->getGridPos()[2][posCreate.col + 1];	//to test
+	Vec2 realPos2 = _board->getGridPos()[posCreate.row - 1][posCreate.col + 1];	//to test
 	auto cir2 = _objMgr->createCircle();
 	auto sprite2 = cir2->getObject()->getSprite();
 	float scale2 = _board->getSideBox() / (float)(sprite2->getContentSize().width);

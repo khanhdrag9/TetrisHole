@@ -19,7 +19,7 @@ USING_NS_CC;
 #include "h_Entity.h"
 
 
-#define COL 10
+#define COL 20
 #define ROW 50
 #define ENABLE_DEBUG_GRID 1
 #define FONT_ARIAL "fonts/arial.ttf"

@@ -48,20 +48,19 @@ void Board::init(const int& row, const int& col)
             _sideBox = sizeForH;
         }
     }
-	float increValueH = sqrt(pow(_sideBox, 2) - pow(_sideBox / 2.f, 2));
-	_sideBox *= (increValueH / (float)_sideBox);
 
     _maxW = _sideBox * col;
     _maxH = _sideBox * row;
     
-	
+	//float increValueH = sqrt(pow(_sideBox, 2) - pow(_sideBox / 2.f, 2));
+	float increValueH = _sideBox;
     float increValueW = _sideBox;
     
     float startX1 = _sideBox / 2.f;
     float startX2 = _sideBox;
     float px = startX1;
     
-    float py = increValueH;
+    float py = increValueH / 2.f;
 
     for (int r = 0; r < _row; r++)
     {

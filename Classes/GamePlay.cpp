@@ -73,6 +73,14 @@ void GamePlay::update(float dt)
 void GamePlay::initBoard()
 {
 	_board = make_shared<Board>(ROW, COL);
+    _board->setNode(this);
+    
+    //set position for layer
+    Size boardSize = _board->getSize();
+    Vec2 posLayer = Vec2(_screenSize.width - boardSize.width, _screenSize.height - boardSize.height) / 2.f;
+    this->setPosition(posLayer);
+    
+    //define up-center-
 	pos colrows = _board->getRowCols();
 	GamePlay::createUp = pos(colrows.row - 1, colrows.col / 2);
 	GamePlay::createDown = pos(0, colrows.col / 2);
@@ -87,7 +95,7 @@ void GamePlay::initBoard()
 			if (pos != Vec2(0, 0))
 			{
 				Label* t = Label::createWithTTF("o", FONT_ARIAL, _board->getSideBox() * 1.75f);
-				t->setPosition(_origin + pos);
+				t->setPosition(pos);
 				t->setColor(Color3B::GRAY);
 				t->setOpacity(75.f);
 				this->addChild(t);
@@ -96,8 +104,6 @@ void GamePlay::initBoard()
         }
     }
 #endif
-    
-    _board->setNode(this);
 
 	//hole
     _board->setHole(make_shared<Hole>());
@@ -110,11 +116,6 @@ void GamePlay::initBoard()
 	holeRepre->getSprite()->setScale(0.2);
 	_board->setRepresentHole(holeRepre);
 	_board->setHolePos(GamePlay::center);
-
-	//set position for layer
-	Size boardSize = _board->getSize();
-	Vec2 posLayer = Vec2(_screenSize.width - boardSize.width, _screenSize.height - boardSize.height) / 2.f;
-	this->setPosition(posLayer + _origin);
 }
 
 void GamePlay::initObjectStart()

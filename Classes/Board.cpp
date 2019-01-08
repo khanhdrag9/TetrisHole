@@ -66,7 +66,7 @@ void Board::init(const int& row, const int& col)
     {
         for (int c = 0; c < _col; c++)
         {
-            _gridPos[r][c] = Vec2(px, py);
+            _gridPos[r][c] = Vec2(px + origin.x, py + origin.y);
             px += increValueW;
         }
         py += increValueH;

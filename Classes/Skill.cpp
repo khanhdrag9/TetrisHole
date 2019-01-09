@@ -5,7 +5,9 @@
 
 Skill::Skill(const shared_ptr<Hole> hole, std::function<void()> callback):
     _hole(hole),
-    _callback(callback)
+    _callback(callback),
+    _counttime(0.f),
+    _interval(0.f)
 {
 }
 
@@ -33,56 +35,48 @@ void Suck::active(void* value)
 
 void Suck::use(float dt)
 {
-    int numObj = (int)_hole->_boardParrent->_listObject.size();
-    auto listObject = _hole->_boardParrent->_listObject;
-	for (int i = 0; i < numObj; i++)
-	{
-        auto obj = listObject[i];
-        if(_hole->_boardParrent->_representHole && listObject[i])
+    if(_counttime >= _interval)
+    {
+        int numObj = (int)_hole->_boardParrent->_listObject.size();
+        auto board = _hole->_boardParrent;
+        auto listObject = board->_listObject;
+        for (int i = 0; i < numObj; i++)
         {
-            if(listObject[i]->getStatus() == gObject::status::MOVING)
+            auto obj = listObject[i];
+            if(_hole->_boardParrent->_representHole && listObject[i])
             {
-                /*thread action([this](shared_ptr<gObject> obj, float dt){
-
-                    mtx.lock();*/
-                    auto speed = _speed;
-                    auto me = obj->getSprite()->getPosition();
-					CCLOG("Obj[%d] Pos: %f-%f", i, me.x, me.y);
-
-                    auto target = _hole->_boardParrent->_representHole->getSprite()->getPosition();
-                    auto diff = target - obj->getSprite()->getPosition();
-                    auto change = diff.getNormalized() * speed * dt;
-                    if(diff.length() > change.length())
-                    {
-                        obj->getSprite()->setPosition(me + change);
-                    }
-                    else
-                    {
-                        obj->getSprite()->setPosition(target);
-                        if(_callback)
-                        {
-                            _callback();
-                        }
-                    }
-                    
-                /*    mtx.unlock();
-                }, listObject[i], dt);
+                pos hole = board->_representHole->getPosition();
+                pos objpos = obj->getPosition();
                 
-                if(action.joinable())
-                    action.join();*/
-                //action.detach();
+                if(hole.row < objpos.row)
+                {
+                    drop(obj, true);
+                }
+                else if(hole.row > objpos.row)
+                {
+                    drop(obj, false);
+                }
                 
             }
-            else if(listObject[i]->getStatus() == gObject::status::NONE)
-            {
-                
-                
-            }
-            else if(listObject[i]->getStatus() == gObject::status::COLLISION)
-            {
-                
-            }
+            
         }
-        
-	}
+        _counttime = 0.f;
+    }
+    
+    _counttime += dt;
+}
+
+void Suck::drop(shared_ptr<gObject> obj, bool upto)
+{
+    pos newpos = obj->getPosition();
+    if(upto)    //drop down
+    {
+        newpos.row--;
+    }
+    else    //drop up
+    {
+        newpos.row++;
+    }
+    
+    obj->setPosition(newpos, _hole->_boardParrent);
 }

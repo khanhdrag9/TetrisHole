@@ -22,4 +22,7 @@ public:
 
 	void useSkill(float dt);
 	void setSkill(const skill skill, std::function<void()> callback = nullptr);
+    Skill* getSkill() {
+        return _skill.get();
+    }
 };

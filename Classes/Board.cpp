@@ -109,11 +109,11 @@ void Board::setHole(shared_ptr<Hole> hole)
 		_parrentObject->addChild(_hole->_spriteNode);
 	}
 }
-
-void Board::setHoleSkill(skill typeSkill, std::function<void()> callback)
-{
-	if (_hole)_hole->setSkill(typeSkill, callback);
-}
+//
+//void Board::setHoleSkill(skill typeSkill, std::function<void()> callback)
+//{
+//    if (_hole)_hole->setSkill(typeSkill, callback);
+//}
 
 void Board::addToHole(shared_ptr<gObject> obj)
 {

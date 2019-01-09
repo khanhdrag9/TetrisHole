@@ -28,12 +28,13 @@ public:
 	void collectObject(const shared_ptr<gObject>& object);
     
 	void setHole(shared_ptr<Hole> hole);
-	void setHoleSkill(const skill typeSkill, std::function<void()> callback = nullptr);
+	//void setHoleSkill(const skill typeSkill, std::function<void()> callback = nullptr);
 	void addToHole(shared_ptr<gObject> obj);	//add to node of hole without not change postion is shown in screen
     void setRepresentHole(const shared_ptr<gObject>& obj);
 	void setHolePos(const pos& p);
     void setNode(Node* node);
     
+    shared_ptr<Hole> getHole(){ return _hole; }
     float getSideBox() const {return _sideBox; }
 	Size getSize() const { return Size(_maxW, _maxH); }
 	pos getRowCols() const { return pos(_row, _col); }

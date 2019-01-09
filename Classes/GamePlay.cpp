@@ -7,6 +7,7 @@
 #include "Templates.h"
 #include "PhysicsManager.h"
 #include "Grid.h"
+#include "Skill.h"
 
 pos GamePlay::createUp = pos(ROW - 1, COL / 2);
 pos GamePlay::createDown = pos(0, COL / 2);
@@ -109,7 +110,8 @@ void GamePlay::initBoard()
     std::function<void()> cb = [this](){
 		
     };
-    _board->setHoleSkill(skill::stuck, cb);
+    _board->getHole()->setSkill(skill::stuck, cb);
+    _board->getHole()->getSkill()->setInterval(0.3f);
 
 	auto holeRepre = ResourcesManager::getInstance()->getObject(object::HOLE);
 	holeRepre->getSprite()->setScale(0.2);

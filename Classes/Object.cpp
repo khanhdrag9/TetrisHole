@@ -1,5 +1,5 @@
 #include "Object.h"
-#include "Header.h"
+#include "Board.h"
 
 gObject::gObject(const char* path):
 _status(status::MOVING)
@@ -27,4 +27,19 @@ gObject::~gObject()
 cocos2d::Sprite* gObject::getSprite()
 {
     return _sprite;
+}
+
+void gObject::setPosition(const pos& p, const shared_ptr<Board>& board)
+{
+	pos rowcols = board->getRowCols();
+	if (p.row < rowcols.row && p.row >= 0 && p.col < rowcols.col && p.col >= 0)
+	{
+		_pos = p;
+		Vec2 realPos = board->getGridPos()[_pos.row][_pos.col];
+		_sprite->setPosition(realPos);
+	}
+	else
+	{
+		CCLOG("gObjet set avaible pos at %d-%d", p.row, p.col);
+	}
 }

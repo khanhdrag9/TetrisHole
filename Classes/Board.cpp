@@ -130,7 +130,7 @@ void Board::setRepresentHole(const shared_ptr<gObject>& obj)
 		{
 			_parrentObject->addChild(_representHole->getSprite());
 		}
-		_representHole->getSprite()->setPosition(_hole->_spriteNode->getPosition());
+		_hole->_spriteNode->setPosition(_representHole->getRealPosition());
 	}
 }
 
@@ -142,7 +142,7 @@ void Board::setHolePos(const pos& p)
 	}
 	if (_representHole)
 	{
-		_representHole->getSprite()->setPosition(_gridPos[p.row][p.col]);
+		_representHole->setPosition(p, shared_from_this());
 	}
 }
 

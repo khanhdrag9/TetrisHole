@@ -1,6 +1,8 @@
 #pragma once
 #include "Header.h"
 
+class Board;
+
 class gObject
 {
     
@@ -22,8 +24,13 @@ public:
 
     virtual ~gObject();
     cocos2d::Sprite* getSprite();
-  
+	void setPosition(const pos& p, const shared_ptr<Board>& board);
+	pos getPosition() const { return _pos; }
+	Vec2 getRealPosition() const { return _sprite->getPosition(); }
     
     friend class ResourcesManager;
     friend class GObjectManager;
+
+public:
+	pos _pos;
 };

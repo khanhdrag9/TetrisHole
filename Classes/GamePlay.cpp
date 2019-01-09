@@ -16,7 +16,7 @@ GamePlay::GamePlay():
     _board(nullptr),
     _objMgr(nullptr),
     _phyMgr(nullptr),
-    _isCreated(true)
+    _isCreated(false)
 {
     
 }
@@ -75,12 +75,12 @@ void GamePlay::initBoard()
 	_board = make_shared<Board>(ROW, COL);
     _board->setNode(this);
     
-    //set position for layer
+    //align layer to center
     Size boardSize = _board->getSize();
     Vec2 posLayer = Vec2(_screenSize.width - boardSize.width, _screenSize.height - boardSize.height) / 2.f;
     this->setPosition(posLayer);
     
-    //define up-center-
+    //define up-center-down
 	pos colrows = _board->getRowCols();
 	GamePlay::createUp = pos(colrows.row - 1, colrows.col / 2);
 	GamePlay::createDown = pos(0, colrows.col / 2);
@@ -100,7 +100,6 @@ void GamePlay::initBoard()
 				t->setOpacity(75.f);
 				this->addChild(t);
 			}
-            //i++;
         }
     }
 #endif
@@ -121,11 +120,7 @@ void GamePlay::initBoard()
 void GamePlay::initObjectStart()
 {
     _objMgr = make_unique<GObjectManager>();
-    
-    //createCircle(true);
-
-    //init hole
-
+	_isCreated = true;
 }
 
 void GamePlay::initListeners()
@@ -143,27 +138,17 @@ void GamePlay::createCircle(bool up)
 {
     //set pos at down screen or up screen
 	pos posCreate = GamePlay::createUp;
-	Vec2 realPos = _board->getGridPos()[posCreate.row][posCreate.col];
+	//pos posCreate = GamePlay::createDown;
 	
 	//create circle
 	auto cir = _objMgr->createCircle();
+	cir->getObject()->setPosition(posCreate, _board);
 	auto sprite = cir->getObject()->getSprite();
 	float scale = _board->getSideBox() / (float)(sprite->getContentSize().width);
 	sprite->setScale(scale);
-	sprite->setPosition(realPos);
     
 	this->addChild(sprite);
-
-
-	//for test
-	Vec2 realPos2 = _board->getGridPos()[posCreate.row - 1][posCreate.col + 1];	//to test
-	auto cir2 = _objMgr->createCircle();
-	auto sprite2 = cir2->getObject()->getSprite();
-	float scale2 = _board->getSideBox() / (float)(sprite2->getContentSize().width);
-	sprite2->setScale(scale2);
-	sprite2->setPosition(realPos2);
-
-	this->addChild(sprite2);
+	_board->collectObject(cir->getObject());
 }
 
 void GamePlay::deleteCircle(list<gObject> listObj)

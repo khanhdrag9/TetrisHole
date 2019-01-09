@@ -4,13 +4,20 @@
 class gObject;
 class Board;
 
+enum class CollisionType
+{
+	NONE,
+	HAS,
+	DOWN,
+	LEFT,
+	RIGHT
+};
+
 class PhysicsManager
 {
-    PhysicsWorld* _physWorld;
 public:
-    PhysicsManager(PhysicsWorld* world);
+    PhysicsManager();
     ~PhysicsManager();
     void setting();
-    void addPhysicsForObject(const shared_ptr<gObject>& obj, bool dynamic, shape type = shape::CIRCLE);
-    bool onContactBegin(PhysicsContact& contact, shared_ptr<Board>& board, int& flag1, int& flag2, function<void(list<gObject>)> callback = nullptr);
+	CollisionType checkCollision(const shared_ptr<gObject>& obj, const shared_ptr<Board>& board);
 };

@@ -30,8 +30,9 @@ public:
 
 class Suck : public Skill
 {
-    float _speed;
+    int _speed = 1;
     void drop(shared_ptr<gObject> obj, bool upto);
+    void slide(shared_ptr<gObject> obj, bool left);
 public:
     Suck(){}
     Suck(const shared_ptr<Hole>& hole, std::function<void()> callback = nullptr) : Skill(hole, callback){}

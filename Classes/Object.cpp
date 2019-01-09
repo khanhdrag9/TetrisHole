@@ -2,19 +2,25 @@
 #include "Board.h"
 
 gObject::gObject(const char* path):
-_status(status::MOVING)
+_status(status::MOVING),
+_inContain(false),
+_inHole(false)
 {
     _sprite = Sprite::create(path);
 }
 
 gObject::gObject():
-_status(status::MOVING)
+_status(status::MOVING),
+_inContain(false),
+_inHole(false)
 {
     
 }
 
 gObject::gObject(shared_ptr<gObject> obj):
-_status(status::MOVING)
+_status(status::MOVING),
+_inContain(false),
+_inHole(false)
 {
     _sprite = obj->_sprite;
 }

@@ -27,7 +27,7 @@ void Skill::active(void* value)
 //Suck
 void Suck::active(void* value)
 {
-    auto v = static_cast<float*>(value);
+    auto v = static_cast<int*>(value);
     _speed = *v;
     
     CC_SAFE_DELETE(v);
@@ -48,6 +48,7 @@ void Suck::use(float dt)
                 pos hole = board->_representHole->getPosition();
                 pos objpos = obj->getPosition();
                 
+                //for verical
                 if(hole.row < objpos.row)
                 {
                     drop(obj, true);
@@ -57,6 +58,15 @@ void Suck::use(float dt)
                     drop(obj, false);
                 }
                 
+                //for hozi
+                if(hole.col < objpos.col)
+                {
+                    drop(obj, true);
+                }
+                else if(hole.col > objpos.col)
+                {
+                    drop(obj, false);
+                }
             }
             
         }
@@ -71,11 +81,26 @@ void Suck::drop(shared_ptr<gObject> obj, bool upto)
     pos newpos = obj->getPosition();
     if(upto)    //drop down
     {
-        newpos.row--;
+        newpos.row-=_speed;
     }
     else    //drop up
     {
-        newpos.row++;
+        newpos.row+=_speed;
+    }
+    
+    obj->setPosition(newpos, _hole->_boardParrent);
+}
+
+void Suck::slide(shared_ptr<gObject> obj, bool left)
+{
+    pos newpos = obj->getPosition();
+    if(left)    //drop down
+    {
+        newpos.col-=_speed;
+    }
+    else    //drop up
+    {
+        newpos.col+=_speed;
     }
     
     obj->setPosition(newpos, _hole->_boardParrent);

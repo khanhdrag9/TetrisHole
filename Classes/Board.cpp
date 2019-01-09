@@ -88,7 +88,7 @@ void Board::update(float dt)
 {
 	if (_hole)
     {
-        _hole->_skill->active(static_cast<void*>(new float(100.f)));
+        _hole->_skill->active(static_cast<void*>(new int(1)));
         _hole->useSkill(dt);
     }
 

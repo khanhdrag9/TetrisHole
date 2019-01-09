@@ -5,9 +5,11 @@ class Board;
 
 class gObject
 {
-    
+ 
 protected:
     cocos2d::Sprite* _sprite;
+    bool _inContain;
+    bool _inHole;
     
 public:
     enum class status
@@ -30,6 +32,9 @@ public:
     
     friend class ResourcesManager;
     friend class GObjectManager;
+    friend class Suck;
+    friend class Hole;
+    friend class Skill;
 
 public:
 	pos _pos;

@@ -30,7 +30,7 @@ shared_ptr<Circle> GObjectManager::createCircle()
     _releaseCir = nullptr;
     shared_ptr<gObject> obj = ResourcesManager::getInstance()->getObject(object::CIRCLE);
     _releaseCir = make_shared<Circle>(obj);
-    obj->_inContain = true;
+    obj->_parrent = own::container;
     
     return _releaseCir;
 }

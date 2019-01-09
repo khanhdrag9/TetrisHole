@@ -8,8 +8,7 @@ class gObject
  
 protected:
     cocos2d::Sprite* _sprite;
-    bool _inContain;
-    bool _inHole;
+    own _parrent;
     
 public:
     enum class status
@@ -29,12 +28,12 @@ public:
 	void setPosition(const pos& p, const shared_ptr<Board>& board);
 	pos getPosition() const { return _pos; }
 	Vec2 getRealPosition() const { return _sprite->getPosition(); }
+    own getOwn() const { return _parrent; };
     
     friend class ResourcesManager;
     friend class GObjectManager;
     friend class Suck;
     friend class Hole;
-    friend class Skill;
 
 public:
 	pos _pos;

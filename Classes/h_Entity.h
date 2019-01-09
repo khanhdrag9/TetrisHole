@@ -21,3 +21,10 @@ enum class skill : int
 {
 	stuck = 1
 };
+
+enum class own : int
+{
+    none,
+    container,
+    hole
+};

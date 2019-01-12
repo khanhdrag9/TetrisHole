@@ -1,5 +1,7 @@
 #pragma once
 #include "Header.h"
+#include "Board.h"
+#include "Grid.h"
 
 class Board;
 
@@ -12,6 +14,14 @@ public:
     
     Sprite* sprite;
     
-    inline void setPosition(const pos& p);
-    inline const pos& getPosition() const;
+    inline void setPosition(const pos& p)
+    {
+        _position = p;
+        Vec2 realPos = Board::gridPos->realPos(_position);
+        sprite->setPosition(realPos);
+    }
+    inline const pos& getPosition() const
+    {
+        return _position;
+    }
 };

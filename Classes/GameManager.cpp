@@ -42,7 +42,7 @@ void GameManager::setNodeParrent(Node* node)
             Vec2 position = Board::gridPos->realPos(pos(r,c));
             if (position != Vec2(0, 0))
             {
-                Label* t = Label::createWithTTF("o", FONT_ARIAL, _board->getSideObj() * 1.75f);
+                Label* t = Label::createWithTTF("o", FONT_ARIAL, Board::sideObj * 1.75f);
                 t->setPosition(position);
                 t->setColor(Color3B::GRAY);
                 t->setOpacity(75.f);

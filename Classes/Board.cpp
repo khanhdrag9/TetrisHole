@@ -10,6 +10,7 @@
 #include "Grid.h"
 
 unique_ptr<GridPosition> Board::gridPos = nullptr;
+float Board::sideObj = 0.f;
 
 void Board::init(const int &row, const int &col)
 {
@@ -27,13 +28,13 @@ void Board::init(const int &row, const int &col)
     {
         float sizeForW = sz.width / col;
         float sizeForH = sz.height / row;
-        _sideObj = sizeForW < sizeForH ? sizeForW : sizeForH;
+        Board::sideObj = sizeForW < sizeForH ? sizeForW : sizeForH;
     }
-    float rangeX = (sz.width - _sideObj * COL) / 2.f;   //ranger from side
-    float rangeY = (sz.height - _sideObj * ROW) / 2.f;
+    float rangeX = (sz.width - Board::sideObj * COL) / 2.f;   //ranger from side
+    float rangeY = (sz.height - Board::sideObj * ROW) / 2.f;
     
-    float startX = origin.x + rangeX + _sideObj * 0.5f;
-    float startY = origin.y + rangeY + _sideObj * 0.5f;
+    float startX = origin.x + rangeX + Board::sideObj * 0.5f;
+    float startY = origin.y + rangeY + Board::sideObj * 0.5f;
     
     float px = startX;
     float py = startY;
@@ -44,10 +45,10 @@ void Board::init(const int &row, const int &col)
         for(int c = 0; c < col; ++c)
         {
             Board::gridPos->realPos(pos(r,c)) = Vec2(px, py);
-            px += _sideObj;
+            px += Board::sideObj;
         }
         px = startX;
-        py += _sideObj;
+        py += Board::sideObj;
     }
 }
 

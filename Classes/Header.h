@@ -41,7 +41,7 @@ struct pos
 	}
 	pos operator-(const pos& ipos)
 	{
-		return pos(row + ipos.row, col + ipos.col);
+		return pos(row - ipos.row, col - ipos.col);
 	}
     bool operator==(const pos& ipos)
     {

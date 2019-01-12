@@ -43,9 +43,61 @@ struct pos
 	{
 		return pos(row + ipos.row, col + ipos.col);
 	}
-
-	bool operator==(const pos& ipos)
-	{
-		return (row == ipos.row && col == ipos.col);
-	}
+    bool operator==(const pos& ipos)
+    {
+        return (row == ipos.row && col == ipos.col);
+    }
+    
+    bool operator!=(const pos& ipos)
+    {
+        return (row != ipos.row || col != ipos.col);
+    }
+    
+    bool operator<(const pos& ipos)
+    {
+        if(row < ipos.row)
+            return true;
+        else if(row == ipos.row)
+        {
+            if(col < ipos.col)return true;
+            else return false;
+        }
+        else
+            return false;
+    }
+    
+    bool operator>(const pos& ipos)
+    {
+        if(*this != ipos && !(*this < ipos))return true;
+        else return false;
+    }
 };
+
+static bool operator!=(const pos& ipos1, const pos& ipos2)
+{
+    return (ipos1.row != ipos2.row || ipos1.col != ipos2.col);
+}
+
+static bool operator==(const pos& ipos1, const pos& ipos2)
+{
+    return (ipos1.row == ipos2.row && ipos1.col == ipos2.col);
+}
+
+static bool operator<(const pos& ipos1, const pos& ipos2)
+{
+    if(ipos1.row < ipos2.row)
+        return true;
+    else if(ipos1.row == ipos2.row)
+    {
+        if(ipos1.col < ipos2.col)return true;
+        else return false;
+    }
+    else
+        return false;
+}
+
+static bool operator>(const pos& ipos1, const pos& ipos2)
+{
+    if(ipos1 != ipos2 && !(ipos1 < ipos2))return true;
+    else return false;
+}

@@ -16,7 +16,6 @@ USING_NS_CC;
 
 
 //Game
-#include "h_Entity.h"
 
 
 #define COL 20

@@ -12,6 +12,6 @@ public:
     
     Sprite* sprite;
     
-    inline void setPosition(const pos& p, const shared_ptr<Board>& board);
+    inline void setPosition(const pos& p);
     inline const pos& getPosition() const;
 };

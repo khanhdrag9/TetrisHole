@@ -11,7 +11,7 @@ public:
     
     void init(const int& row, const int& col);
     
-    inline Vec2& operator[](const pos& p){
+    inline Vec2& realPos(const pos& p){
         
         return _grid[p];
     }

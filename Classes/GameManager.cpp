@@ -1,8 +1,10 @@
 #include "GameManager.h"
 #include "CreateManager.h"
 #include "ContainerManager.h"
+#include "Board.h"
 #include "Container.h"
 #include "Obj.h"
+#include "Grid.h"
 
 GameManager::GameManager():
     _current(nullptr),
@@ -12,8 +14,11 @@ GameManager::GameManager():
     _screenSize = Director::getInstance()->getVisibleSize();
     _origin = Director::getInstance()->getVisibleOrigin();
     
+    _board = make_unique<Board>(ROW, COL);
+    
     _createMg = make_unique<CreateManager>();
     _containerMg = make_unique<ContainerManager>();
+    
 }
 
 GameManager::~GameManager()
@@ -21,11 +26,32 @@ GameManager::~GameManager()
     _current = nullptr;
     _createMg = nullptr;
     _containerMg = nullptr;
+    _board = nullptr;
 }
 
 void GameManager::setNodeParrent(Node* node)
 {
     _current = node;
+    
+#if ENABLE_DEBUG_GRID
+    pos sizeBoard = Board::gridPos->getSize();
+    for (int r = 0; r < sizeBoard.row; r++)
+    {
+        for (int c = 0; c < sizeBoard.col; c++)
+        {
+            Vec2 position = Board::gridPos->realPos(pos(r,c));
+            if (position != Vec2(0, 0))
+            {
+                Label* t = Label::createWithTTF("o", FONT_ARIAL, _board->getSideObj() * 1.75f);
+                t->setPosition(position);
+                t->setColor(Color3B::GRAY);
+                t->setOpacity(75.f);
+                _current->addChild(t);
+            }
+        }
+    }
+#endif
+    
 }
 
 void GameManager::createContainer()

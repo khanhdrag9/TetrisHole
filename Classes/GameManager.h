@@ -4,12 +4,14 @@
 
 class CreateManager;
 class ContainerManager;
+class Board;
 class Container;
 
 class GameManager : public Singleton<GameManager>
 {
     unique_ptr<CreateManager> _createMg;
     unique_ptr<ContainerManager> _containerMg;
+    unique_ptr<Board> _board;
     
     vector<shared_ptr<Container>> _containers;
     

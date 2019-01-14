@@ -45,6 +45,7 @@ void Container::setPosition(const pos& p)
         pos op = _objs[i]->getPosition();
         pos newp = op + posincre;
         _objs[i]->setPosition(newp);
+        
     }
 }
 

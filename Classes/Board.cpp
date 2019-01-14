@@ -21,6 +21,7 @@ void Board::init(const int &row, const int &col)
     }
     
     Board::gridPos = make_unique<GridPosition>(row, col);
+    Board::girdObj = make_unique<GridObj>(row, col);
     
     //set Vec2 for girdPosition
     auto sz = Director::getInstance()->getVisibleSize();

@@ -55,7 +55,6 @@ void GameManager::update(float dt)
 			{
 				pos incre = pos(-1, 0);
 				moveByContainer(o, incre);
-			
 			}
 		}
 		_count_time = 0.f;
@@ -164,5 +163,24 @@ bool GameManager::checkPos(const pos& p)
 
 list<GameManager::collision_pos> GameManager::getCollisionPos(const pos& p) const
 {
+    list<GameManager::collision_pos> result;
     
+    pos check[] = {
+        pos(p.row + 1, p.col),
+        pos(p.row - 1, p.col),
+        pos(p.row, p.col - 1),
+        pos(p.row, p.col + 1),
+        pos(p.row + 1, p.col - 1),
+        pos(p.row + 1, p.col + 1),
+        pos(p.row - 1, p.col - 1),
+        pos(p.row - 1, p.col + 1)
+    };
+    
+    for(int i = GameManager::collision_pos::LEFT; i < GameManager::collision_pos::HAS; i++)
+    {
+        if(Board::girdObj->getObj(check[i]))
+            result.push_back((collision_pos)i);
+    }
+    
+    return result;
 }

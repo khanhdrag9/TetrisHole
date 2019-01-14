@@ -41,8 +41,6 @@ public:
     
     void init(const int& row, const int& col) override;
     
-    inline shared_ptr<Obj> getObj(const pos& p){
-        return _grid[p];
-    }
+    shared_ptr<Obj>& getObj(const pos& p);
 
 };

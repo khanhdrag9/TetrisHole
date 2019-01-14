@@ -35,12 +35,17 @@ public:
 	pos _createBot;
 	pos _axis;
     
-    enum class collision_pos
+    enum collision_pos
     {
-        TOP,
+        TOP = 0,
         BOT,
         LEFT,
-        RIGHT
+        RIGHT,
+        TOP_LEFT,
+        TOP_RIGHT,
+        BOT_LEFT,
+        BOT_RIGHT,
+        HAS
     };
 private:
     

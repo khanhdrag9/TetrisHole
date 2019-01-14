@@ -5,7 +5,7 @@
 
 class Board;
 
-class Obj
+class Obj : public enable_shared_from_this<Obj>
 {
     pos _position;
 public:
@@ -16,9 +16,15 @@ public:
     
     inline void setPosition(const pos& p)
     {
-        _position = p;
-        Vec2 realPos = Board::gridPos->realPos(_position);
-        sprite->setPosition(realPos);
+        if(_position.row > -1 && _position.col > -1)
+        {
+            Board::girdObj->getObj(_position) = nullptr;
+            Board::girdObj->getObj(p) = shared_from_this();
+            
+            _position = p;
+            Vec2 realPos = Board::gridPos->realPos(_position);
+            sprite->setPosition(realPos);
+        }
     }
     inline const pos& getPosition() const
     {

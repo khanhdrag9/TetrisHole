@@ -49,6 +49,9 @@ void GridObj::init(const int &row, const int &col)
     };
 }
 
+shared_ptr<Obj>& GridObj::getObj(const pos& p){
+    return _grid[p];
+}
 
 GridObj::~GridObj()
 { 

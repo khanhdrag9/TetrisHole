@@ -151,3 +151,18 @@ void GameManager::addChild(shared_ptr<Container> container)
 		CCLOG("Current node is null");
 	}
 }
+
+bool GameManager::checkPos(const pos& p)
+{
+    pos girdSize = Board::gridPos->getSize();
+    
+    if(p.row < 0 || p.row >= girdSize.row || p.col < 0 || p.col >= girdSize.col)
+        return false;
+    else
+        return true;
+}
+
+list<GameManager::collision_pos> GameManager::getCollisionPos(const pos& p) const
+{
+    
+}

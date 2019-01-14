@@ -10,6 +10,7 @@
 #include "Grid.h"
 
 unique_ptr<GridPosition> Board::gridPos = nullptr;
+unique_ptr<GridObj> Board::girdObj = nullptr;
 float Board::sideObj = 0.f;
 
 void Board::init(const int &row, const int &col)

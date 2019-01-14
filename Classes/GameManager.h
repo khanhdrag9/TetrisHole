@@ -34,8 +34,20 @@ public:
 	pos _createTop;
 	pos _createBot;
 	pos _axis;
+    
+    enum class collision_pos
+    {
+        TOP,
+        BOT,
+        LEFT,
+        RIGHT
+    };
 private:
+    
     void addChild(shared_ptr<Container> container);
 	void createContainer();
 	void moveByContainer(shared_ptr<Container> container, const pos& incre);
+    bool checkPos(const pos& p);
+    list<collision_pos> getCollisionPos(const pos& p) const;
+
 };

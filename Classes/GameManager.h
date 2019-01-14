@@ -13,7 +13,12 @@ class GameManager : public Singleton<GameManager>
     unique_ptr<ContainerManager> _containerMg;
     unique_ptr<Board> _board;
     
-    vector<shared_ptr<Container>> _containers;
+    //vector<shared_ptr<Container>> _containers;
+
+	bool _createdContainer;
+
+	float _count_time;
+	float _interval_time;
     
     Node* _current;
     Size _screenSize;
@@ -24,10 +29,13 @@ public:
     ~GameManager();
     void setNodeParrent(Node* node);
     
-    void createContainer();
+	void update(float dt);
     
 	pos _createTop;
 	pos _createBot;
+	pos _axis;
 private:
     void addChild(shared_ptr<Container> container);
+	void createContainer();
+	void moveByContainer(shared_ptr<Container> container, const pos& incre);
 };

@@ -9,7 +9,10 @@
 GameManager::GameManager():
     _current(nullptr),
     _createMg(nullptr),
-    _containerMg(nullptr)
+    _containerMg(nullptr),
+	_createdContainer(false),
+	_count_time(0.f),
+	_interval_time(0.3f)
 {
     _screenSize = Director::getInstance()->getVisibleSize();
     _origin = Director::getInstance()->getVisibleOrigin();
@@ -20,6 +23,7 @@ GameManager::GameManager():
 	pos size = Board::gridPos->getSize();
 	_createTop = pos(size.row - 1, size.col / 2);
 	_createBot = pos(0, size.col / 2);
+	_axis = pos(size.row / 2, size.col / 2);
     
     _createMg = make_unique<CreateManager>();
     _containerMg = make_unique<ContainerManager>();
@@ -32,6 +36,54 @@ GameManager::~GameManager()
     _createMg = nullptr;
     _containerMg = nullptr;
     _board = nullptr;
+}
+
+void GameManager::update(float dt)
+{
+	if (!_current)
+	{
+		//CCLOG("current is null");
+		return;
+	}
+
+	//move container
+	if (_count_time >= _interval_time)
+	{
+		for (auto& o : _containerMg->getContainers())
+		{
+			if (o)
+			{
+				pos incre = pos(-1, 0);
+				moveByContainer(o, incre);
+			}
+		}
+		_count_time = 0.f;
+	}
+	else
+	{
+		_count_time += dt;
+	}
+
+
+	if (_createdContainer)
+	{
+		createContainer();
+		_createdContainer = false;
+	}
+}
+
+void GameManager::moveByContainer(shared_ptr<Container> container, const pos& incre)
+{
+	//calculate new pos
+	pos newpos = container->getPosition();
+	if (newpos.row < 0)
+	{
+		CCLOG("Curpos is not available!");
+		return;
+	}
+
+	newpos = newpos + incre;
+	container->setPosition(newpos);
 }
 
 void GameManager::setNodeParrent(Node* node)
@@ -56,7 +108,8 @@ void GameManager::setNodeParrent(Node* node)
         }
     }
 #endif
-    
+
+	_createdContainer = true;
 }
 
 void GameManager::createContainer()

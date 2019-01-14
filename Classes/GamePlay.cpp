@@ -16,7 +16,7 @@ bool GamePlay::init()
     
     //init game manager
     GameManager::getInstance()->setNodeParrent(this);
-    GameManager::getInstance()->createContainer();
+   // GameManager::getInstance()->createContainer();
     
     this->scheduleUpdate();
     return true;
@@ -24,5 +24,5 @@ bool GamePlay::init()
 
 void GamePlay::update(float dt)
 {
-    
+	GameManager::getInstance()->update(dt);
 }

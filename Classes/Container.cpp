@@ -48,6 +48,17 @@ void Container::setPosition(const pos& p)
     }
 }
 
+pos Container::getPosition() const
+{
+	int axis = (int)_objs.size() / 2;
+	if (_objs.size() > axis)
+	{
+		return _objs[axis]->getPosition();
+	}
+	
+	return pos(-1, -1);
+}
+
 void Container::release()
 {
     for(auto& o : _objs)

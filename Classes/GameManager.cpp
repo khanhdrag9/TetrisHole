@@ -15,6 +15,11 @@ GameManager::GameManager():
     _origin = Director::getInstance()->getVisibleOrigin();
     
     _board = make_unique<Board>(ROW, COL);
+
+	//create pos to init a container on it
+	pos size = Board::gridPos->getSize();
+	_createTop = pos(size.row - 1, size.col / 2);
+	_createBot = pos(0, size.col / 2);
     
     _createMg = make_unique<CreateManager>();
     _containerMg = make_unique<ContainerManager>();
@@ -62,7 +67,10 @@ void GameManager::createContainer()
     int count = 1;
     for(int i = 0; i < count; i++)
     {
-        list.push_back(_createMg->createRandomContainer());
+        auto container = _createMg->createRandomContainer();
+		container->setPosition(_createTop);
+
+		list.push_back(container);
     }
     _containerMg->collectContainer(list);
     

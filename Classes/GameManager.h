@@ -26,7 +26,8 @@ public:
     
     void createContainer();
     
-    
+	pos _createTop;
+	pos _createBot;
 private:
     void addChild(shared_ptr<Container> container);
 };

@@ -55,6 +55,7 @@ void GameManager::update(float dt)
 			{
 				pos incre = pos(-1, 0);
 				moveByContainer(o, incre);
+			
 			}
 		}
 		_count_time = 0.f;
@@ -125,20 +126,28 @@ void GameManager::createContainer()
 
 		list.push_back(container);
     }
+
+	//add to scene
+	for (auto& container : list)
+	{
+		addChild(container);
+	}
+
+	//add to mgr
     _containerMg->collectContainer(list);
-    
-    //add to scene
-    for(auto& container : _containerMg->getContainers())
-    {
-        addChild(container);
-    }
 }
 
 void GameManager::addChild(shared_ptr<Container> container)
 {
-    for(auto& o : container->getObjs())
-    {
-        _current->addChild(o->sprite);
-    }
-   
+	if (_current)
+	{
+		for (auto& o : container->getObjs())
+		{
+			_current->addChild(o->sprite);
+		}
+	}
+	else
+	{
+		CCLOG("Current node is null");
+	}
 }

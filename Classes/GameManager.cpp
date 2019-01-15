@@ -58,7 +58,7 @@ void GameManager::update(float dt)
                 if(listCol[collision_pos::BOT] == true || listCol[collision_pos::AXIS] == true)
                 {
                     _createdContainer = true;
-                    it = _containerMg->getContainers().erase(it);
+                    it = _containerMg->getContainers().erase(it);   //delete
                 }
 				else
                 {

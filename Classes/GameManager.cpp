@@ -49,18 +49,31 @@ void GameManager::update(float dt)
 	//move container
 	if (_count_time >= _interval_time)
 	{
-		for (auto& o : _containerMg->getContainers())
+        vector<shared_ptr<Container>>::iterator it;
+        for(it = _containerMg->getContainers().begin(); it != _containerMg->getContainers().end();)
 		{
-			if (o)
+			if (*it)
 			{
-				auto listCol = getCollisionPos(o);
-
-				
-				pos incre = pos(-1, 0);
-				moveByContainer(o, incre);
-				;
+				auto listCol = getCollisionPos(*it);
+                if(listCol[collision_pos::BOT] == true || listCol[collision_pos::AXIS] == true)
+                {
+                    _createdContainer = true;
+                    it = _containerMg->getContainers().erase(it);
+                }
+				else
+                {
+                    pos incre = pos(-1, 0);
+                    moveByContainer(*it, incre);
+                    it++;
+                }
 			}
+            else
+            {
+                it++;
+            }
+            
 		}
+        
 		_count_time = 0.f;
 	}
 	else
@@ -165,38 +178,42 @@ bool GameManager::checkPos(const pos& p)
         return true;
 }
 
-list<GameManager::collision_pos> GameManager::getCollisionPos(const pos& p) const
+check_collision GameManager::getCollisionPos(const pos& p) const
 {
-    list<GameManager::collision_pos> result;
+    check_collision result;
     
-    pos check[] = {
-        pos(p.row + 1, p.col),
-        pos(p.row - 1, p.col),
+    pos check[] = {             //Order by collision_pos enum
+        pos(p.row + 1, p.col),  //Top
+        pos(p.row - 1, p.col),  //Bot...
         pos(p.row, p.col - 1),
         pos(p.row, p.col + 1),
         pos(p.row + 1, p.col - 1),
         pos(p.row + 1, p.col + 1),
         pos(p.row - 1, p.col - 1),
-        pos(p.row - 1, p.col + 1)
+        pos(p.row - 1, p.col + 1),   //Bot_right
+        pos(p.row - 1, p.col)   //Axis
     };
     
-    for(int i = GameManager::collision_pos::LEFT; i < GameManager::collision_pos::HAS; i++)
+    for(int i = 0; i < collision_pos::HAS; i++)
     {
         if(Board::girdObj->getObj(check[i]))
-            result.push_back((collision_pos)i);
+            result[i] = true;
+        else
+            result[i] = false;
     }
     
     return result;
 }
 
-list<GameManager::collision_pos> GameManager::getCollisionPos(const shared_ptr<Container>& container) const
+check_collision GameManager::getCollisionPos(const shared_ptr<Container>& container) const
 {
-	list<GameManager::collision_pos> result;
+	check_collision result;
 
 	list<pos> posskips;	//skip Obj in same container
 	for (auto& obj : container->getObjs())
 	{
-		posskips.push_back(obj->getPosition());
+        if(obj)
+            posskips.push_back(obj->getPosition());
 	}
 
 	//check collision of contaienr
@@ -211,27 +228,26 @@ list<GameManager::collision_pos> GameManager::getCollisionPos(const shared_ptr<C
 			pos(p.row + 1, p.col - 1),
 			pos(p.row + 1, p.col + 1),
 			pos(p.row - 1, p.col - 1),
-			pos(p.row - 1, p.col + 1)
+			pos(p.row - 1, p.col + 1),
+            pos(p.row - 1, p.col)
 		};
-
-		for (int i = GameManager::collision_pos::LEFT; i < GameManager::collision_pos::HAS; i++)
+        
+        //check with Axis
+		for (int i = 0; i < collision_pos::HAS; i++)    //skip check with Axis
 		{
 			pos poscheck = check[i];
 
-			bool isContain = false;
-			for (auto& ps : posskips)
-			{
-				if (poscheck == ps)
-				{
-					isContain = true;
-					break;
-				}
-			}
+            bool isContain = (std::find(posskips.begin(), posskips.end(), poscheck) != posskips.end());
 
 			if (!isContain)
 			{
-				if (Board::girdObj->getObj(poscheck))
-					result.push_back((collision_pos)i);
+                if(i == collision_pos::AXIS && poscheck.row == _axis.row)
+                    result[i] = true;
+                else if (Board::girdObj->getObj(poscheck))
+                    result[i] = true;
+                else
+                    result[i] = false;
+                
 			}
 		}
 	}

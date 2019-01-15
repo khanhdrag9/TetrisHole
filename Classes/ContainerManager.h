@@ -11,7 +11,7 @@ public:
     ContainerManager();
     ~ContainerManager();
     
-    inline vector<shared_ptr<Container>> getContainers(){
+    inline vector<shared_ptr<Container>>& getContainers(){
         return _containers;
     }
     void collectContainer(list<shared_ptr<Container>>& containers);

@@ -6,6 +6,7 @@
 #include <map>
 #include <list>
 #include <vector>
+#include <array>
 
 using namespace std;
 

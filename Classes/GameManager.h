@@ -7,6 +7,22 @@ class ContainerManager;
 class Board;
 class Container;
 
+enum collision_pos  //Has is represent for the number of type collision
+{
+    TOP = 0,
+    BOT,
+    LEFT,
+    RIGHT,
+    TOP_LEFT,
+    TOP_RIGHT,
+    BOT_LEFT,
+    BOT_RIGHT,
+    AXIS,
+    HAS
+};
+
+using check_collision = array<bool, (int)collision_pos::HAS>;
+
 class GameManager : public Singleton<GameManager>
 {
     unique_ptr<CreateManager> _createMg;
@@ -35,25 +51,14 @@ public:
 	pos _createBot;
 	pos _axis;
     
-    enum collision_pos
-    {
-        TOP = 0,
-        BOT,
-        LEFT,
-        RIGHT,
-        TOP_LEFT,
-        TOP_RIGHT,
-        BOT_LEFT,
-        BOT_RIGHT,
-        HAS
-    };
+    
 private:
     
     void addChild(shared_ptr<Container> container);
 	void createContainer();
 	void moveByContainer(shared_ptr<Container> container, const pos& incre);
     bool checkPos(const pos& p);
-    list<collision_pos> getCollisionPos(const pos& p) const;
-	list<collision_pos> getCollisionPos(const shared_ptr<Container>& container) const;
+    check_collision getCollisionPos(const pos& p) const;
+	check_collision getCollisionPos(const shared_ptr<Container>& container) const;
 
 };

@@ -7,7 +7,7 @@ class Board;
 
 class Obj : public enable_shared_from_this<Obj>
 {
-    pos _position;
+	pos _position;
 public:
     Obj(const char* path);
     virtual ~Obj();

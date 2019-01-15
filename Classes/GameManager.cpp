@@ -55,6 +55,7 @@ void GameManager::update(float dt)
 			{
 				pos incre = pos(-1, 0);
 				moveByContainer(o, incre);
+				getCollisionPos(o);
 			}
 		}
 		_count_time = 0.f;
@@ -183,4 +184,54 @@ list<GameManager::collision_pos> GameManager::getCollisionPos(const pos& p) cons
     }
     
     return result;
+}
+
+list<GameManager::collision_pos> GameManager::getCollisionPos(const shared_ptr<Container>& container) const
+{
+	list<GameManager::collision_pos> result;
+
+	list<pos> posskips;	//skip Obj in same container
+	for (auto& obj : container->getObjs())
+	{
+		posskips.push_back(obj->getPosition());
+	}
+
+	//check collision of contaienr
+	for (auto& obj : container->getObjs())
+	{
+		pos p = obj->getPosition();
+		pos check[] = {
+			pos(p.row + 1, p.col),
+			pos(p.row - 1, p.col),
+			pos(p.row, p.col - 1),
+			pos(p.row, p.col + 1),
+			pos(p.row + 1, p.col - 1),
+			pos(p.row + 1, p.col + 1),
+			pos(p.row - 1, p.col - 1),
+			pos(p.row - 1, p.col + 1)
+		};
+
+		for (int i = GameManager::collision_pos::LEFT; i < GameManager::collision_pos::HAS; i++)
+		{
+			pos poscheck = check[i];
+
+			bool isContain = false;
+			for (auto& ps : posskips)
+			{
+				if (poscheck == ps)
+				{
+					isContain = true;
+					break;
+				}
+			}
+
+			if (!isContain)
+			{
+				if (Board::girdObj->getObj(poscheck))
+					result.push_back((collision_pos)i);
+			}
+		}
+	}
+
+	return result;
 }

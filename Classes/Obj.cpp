@@ -8,7 +8,7 @@
 #include "Obj.h"
 
 
-Obj::Obj(const char *path)
+Obj::Obj(const char *path):_position(pos(0, 0))
 {
     sprite = Sprite::create(path);
     sprite->retain();

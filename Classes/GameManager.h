@@ -54,5 +54,6 @@ private:
 	void moveByContainer(shared_ptr<Container> container, const pos& incre);
     bool checkPos(const pos& p);
     list<collision_pos> getCollisionPos(const pos& p) const;
+	list<collision_pos> getCollisionPos(const shared_ptr<Container>& container) const;
 
 };

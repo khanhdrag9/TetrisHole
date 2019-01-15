@@ -53,9 +53,12 @@ void GameManager::update(float dt)
 		{
 			if (o)
 			{
+				auto listCol = getCollisionPos(o);
+
+				
 				pos incre = pos(-1, 0);
 				moveByContainer(o, incre);
-				getCollisionPos(o);
+				;
 			}
 		}
 		_count_time = 0.f;

@@ -23,6 +23,13 @@ enum collision_pos  //Has is represent for the number of type collision
     HAS
 };
 
+enum class direction
+{
+    NONE,
+    LEFT,
+    RIGHT
+};
+
 using check_collision = array<bool, (int)collision_pos::HAS>;
 
 class GameManager : public Singleton<GameManager>
@@ -36,9 +43,13 @@ class GameManager : public Singleton<GameManager>
 	vector<shared_ptr<Obj>> _objsUnContainer;
 
 	bool _createdContainer;
+    
+    Vec2 _touchBegin;
+    Vec2 _rangerTouch;
 
 	float _count_time;
 	float _interval_time;
+    direction _holeDirect;
     
     Node* _current;
     Size _screenSize;

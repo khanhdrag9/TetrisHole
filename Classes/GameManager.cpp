@@ -14,7 +14,8 @@ GameManager::GameManager():
 	_createdContainer(false),
 	_hole(nullptr),
 	_count_time(0.f),
-	_interval_time(0.3f)
+	_interval_time(0.3f),
+    _holeDirect(direction::NONE)
 {
     _screenSize = Director::getInstance()->getVisibleSize();
     _origin = Director::getInstance()->getVisibleOrigin();
@@ -48,6 +49,17 @@ void GameManager::update(float dt)
 		//CCLOG("current is null");
 		return;
 	}
+    
+    if(_holeDirect == direction::LEFT)
+    {
+        moveByHole(pos(0, -1));
+        _holeDirect = direction::NONE;
+    }
+    else if(_holeDirect == direction::RIGHT)
+    {
+        moveByHole(pos(0, 1));
+        _holeDirect = direction::NONE;
+    }
 
 	//move container
 	if (_count_time >= _interval_time)
@@ -291,19 +303,43 @@ check_collision GameManager::getCollisionPos(const shared_ptr<Container>& contai
 	return result;
 }
 
-void GameManager::touchEnded(cocos2d::Touch *touch, cocos2d::Event *event) { 
+void GameManager::touchEnded(cocos2d::Touch *touch, cocos2d::Event *event)
+{
     
 }
 
-
-void GameManager::touchMoved(cocos2d::Touch *touch, cocos2d::Event *event) { 
+void GameManager::touchMoved(cocos2d::Touch *touch, cocos2d::Event *event)
+{
+    if(_touchBegin == Vec2(0,0))
+    {
+        CCLOG("can specify touch begin when move touch");
+        return;
+    }
+    
+    Vec2 touchPos = touch->getLocation();
+    float sub2Touch = touchPos.x - _touchBegin.x;
+    if(abs((float)sub2Touch) >= Board::sideObj * 0.8f)
+    {
+        if(sub2Touch < 0)
+        {
+            _holeDirect = direction::LEFT;
+        }
+        else if(sub2Touch > 0)
+        {
+            _holeDirect = direction::RIGHT;
+        }
+        _touchBegin = touchPos;
+    }
     
 }
 
-
-bool GameManager::touchBegan(cocos2d::Touch *touch, cocos2d::Event *event) { 
-    
-    CCLOG("Touch began");
+bool GameManager::touchBegan(cocos2d::Touch *touch, cocos2d::Event *event)
+{
+    if(_hole)
+    {
+        _touchBegin = touch->getLocation();
+        _rangerTouch = _touchBegin - Board::gridPos->realPos(_hole->getPosition());
+    }
     return true;
 }
 

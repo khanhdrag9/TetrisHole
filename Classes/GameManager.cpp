@@ -5,12 +5,14 @@
 #include "Container.h"
 #include "Obj.h"
 #include "Grid.h"
+#include "Hole.h"
 
 GameManager::GameManager():
     _current(nullptr),
     _createMg(nullptr),
     _containerMg(nullptr),
 	_createdContainer(false),
+	_hole(nullptr),
 	_count_time(0.f),
 	_interval_time(0.3f)
 {
@@ -27,7 +29,7 @@ GameManager::GameManager():
     
     _createMg = make_unique<CreateManager>();
     _containerMg = make_unique<ContainerManager>();
-    
+	_hole = make_unique<Hole>();
 }
 
 GameManager::~GameManager()
@@ -36,6 +38,7 @@ GameManager::~GameManager()
     _createMg = nullptr;
     _containerMg = nullptr;
     _board = nullptr;
+	_hole = nullptr;
 }
 
 void GameManager::update(float dt)
@@ -106,6 +109,7 @@ void GameManager::moveByContainer(shared_ptr<Container> container, const pos& in
 void GameManager::setNodeParrent(Node* node)
 {
     _current = node;
+	_hole->init(node);
     
 #if ENABLE_DEBUG_GRID
     pos sizeBoard = Board::gridPos->getSize();

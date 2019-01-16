@@ -6,6 +6,8 @@ class CreateManager;
 class ContainerManager;
 class Board;
 class Container;
+class Hole;
+class Obj;
 
 enum collision_pos  //Has is represent for the number of type collision
 {
@@ -28,8 +30,10 @@ class GameManager : public Singleton<GameManager>
     unique_ptr<CreateManager> _createMg;
     unique_ptr<ContainerManager> _containerMg;
     unique_ptr<Board> _board;
+	unique_ptr<Hole> _hole;
     
     //vector<shared_ptr<Container>> _containers;
+	vector<shared_ptr<Obj>> _objsUnContainer;
 
 	bool _createdContainer;
 

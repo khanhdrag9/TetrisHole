@@ -61,7 +61,13 @@ void GameManager::update(float dt)
                 if(listCol[collision_pos::BOT] == true || listCol[collision_pos::AXIS] == true)
                 {
                     _createdContainer = true;
-                    it = _containerMg->getContainers().erase(it);   //delete
+					
+					for (auto& o : (*it)->getObjs())	//add obj to hole
+					{
+						_hole->collect(o);
+					}
+
+                    it = _containerMg->getContainers().erase(it);   //delete from ContainerManager
                 }
 				else
                 {

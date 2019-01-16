@@ -27,12 +27,23 @@ void Hole::init(Node* parrent)
 
 void Hole::collect(shared_ptr<Obj> obj)
 {
-	_node->addChild(obj->sprite);
+    obj->sprite->retain();
+    obj->sprite->removeFromParentAndCleanup(true);
+    _node->addChild(obj->sprite);
+    obj->sprite->autorelease();
+    
+    Vec2 posInNode = _node->convertToNodeSpace(Board::gridPos->realPos(obj->getPosition()));
+    obj->sprite->setPosition(posInNode);
 }
 
 void Hole::setPosition(const pos& pos)
 {
-
+    _position = pos;
+    Vec2 realpos = Board::gridPos->realPos(_position);
+    
+    _node->setPosition(realpos);
+    if(_represent)
+        _represent->setPosition(realpos);
 }
 
 void Hole::update(float dt)

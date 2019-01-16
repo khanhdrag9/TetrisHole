@@ -65,6 +65,10 @@ void GameManager::update(float dt)
 					for (auto& o : (*it)->getObjs())	//add obj to hole
 					{
 						_hole->collect(o);
+                        _objsUnContainer.push_back(o);
+                        
+                        Vec2 positionO = Board::gridPos->realPos(o->getPosition());
+                        //Vec2 posInNode = 
 					}
 
                     it = _containerMg->getContainers().erase(it);   //delete from ContainerManager
@@ -116,6 +120,7 @@ void GameManager::setNodeParrent(Node* node)
 {
     _current = node;
 	_hole->init(node);
+    _hole->setPosition(_axis);
     
 #if ENABLE_DEBUG_GRID
     pos sizeBoard = Board::gridPos->getSize();

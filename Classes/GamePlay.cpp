@@ -18,6 +18,13 @@ bool GamePlay::init()
     GameManager::getInstance()->setNodeParrent(this);
    // GameManager::getInstance()->createContainer();
     
+    //touch listener
+    auto listener = EventListenerTouchOneByOne::create();
+    listener->onTouchBegan = [this](Touch* touch, Event* event){ return GameManager::getInstance()->touchBegan(touch, event);};
+    listener->onTouchMoved = [this](Touch* touch, Event* event){ GameManager::getInstance()->touchMoved(touch, event);};
+    listener->onTouchEnded = [this](Touch* touch, Event* event){ GameManager::getInstance()->touchEnded(touch, event);};
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    
     this->scheduleUpdate();
     return true;
 }

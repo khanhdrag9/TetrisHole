@@ -29,7 +29,7 @@ void Container::init(const int &number)
         float scale = Board::sideObj / (float)_objs[i]->sprite->getContentSize().width ;
         _objs[i]->sprite->setScale(scale);
         
-        _objs[i]->setPosition(*listp.begin());
+        _objs[i]->setPosition(*listp.begin(), true);
         listp.pop_front();
     }
 }
@@ -44,7 +44,7 @@ void Container::setPosition(const pos& p)
     {
         pos op = _objs[i]->getPosition();
         pos newp = op + posincre;
-        _objs[i]->setPosition(newp);
+        _objs[i]->setPosition(newp, true);
         
     }
 }

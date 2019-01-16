@@ -68,7 +68,7 @@ void GameManager::update(float dt)
                         _objsUnContainer.push_back(o);
                         
                         Vec2 positionO = Board::gridPos->realPos(o->getPosition());
-                        //Vec2 posInNode = 
+                        //Vec2 posInNode =
 					}
 
                     it = _containerMg->getContainers().erase(it);   //delete from ContainerManager
@@ -114,6 +114,27 @@ void GameManager::moveByContainer(shared_ptr<Container> container, const pos& in
 
 	newpos = newpos + incre;
 	container->setPosition(newpos);
+}
+
+void GameManager::moveByHole(const pos& incre)
+{
+    if(_hole)
+    {
+        _hole->setPosition(_hole->getPosition() + incre);
+        
+        for(auto& o : _objsUnContainer)
+        {
+            if(o)
+            {
+                pos newpos = o->getPosition() + incre;
+                o->setPosition(newpos, false);
+            }
+        }
+    }
+    else
+    {
+        CCLOG("Hole is null, cannot move!");
+    }
 }
 
 void GameManager::setNodeParrent(Node* node)
@@ -269,3 +290,20 @@ check_collision GameManager::getCollisionPos(const shared_ptr<Container>& contai
 
 	return result;
 }
+
+void GameManager::touchEnded(cocos2d::Touch *touch, cocos2d::Event *event) { 
+    
+}
+
+
+void GameManager::touchMoved(cocos2d::Touch *touch, cocos2d::Event *event) { 
+    
+}
+
+
+bool GameManager::touchBegan(cocos2d::Touch *touch, cocos2d::Event *event) { 
+    
+    CCLOG("Touch began");
+    return true;
+}
+

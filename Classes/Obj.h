@@ -14,7 +14,7 @@ public:
     
     Sprite* sprite;
     
-    inline void setPosition(const pos& p)
+    inline void setPosition(const pos& p, bool useRealPos)   //only available when not in hole
     {
         if(_position.row > -1 && _position.col > -1)
         {
@@ -22,8 +22,12 @@ public:
             Board::girdObj->getObj(p) = shared_from_this();
             
             _position = p;
-            Vec2 realPos = Board::gridPos->realPos(_position);
-            sprite->setPosition(realPos);
+            
+            if(useRealPos)
+            {
+                Vec2 realPos = Board::gridPos->realPos(_position);
+                sprite->setPosition(realPos);
+            }
         }
     }
     inline const pos& getPosition() const

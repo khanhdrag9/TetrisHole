@@ -51,16 +51,20 @@ public:
     
 	void update(float dt);
     
+    bool touchBegan(Touch* touch, Event* event);
+    void touchMoved(Touch* touch, Event* event);
+    void touchEnded(Touch* touch, Event* event);
+    
 	pos _createTop;
 	pos _createBot;
 	pos _axis;
-    
     
 private:
     
     void addChild(shared_ptr<Container> container);
 	void createContainer();
 	void moveByContainer(shared_ptr<Container> container, const pos& incre);
+    void moveByHole(const pos& incre);
     bool checkPos(const pos& p);
     check_collision getCollisionPos(const pos& p) const;
 	check_collision getCollisionPos(const shared_ptr<Container>& container) const;

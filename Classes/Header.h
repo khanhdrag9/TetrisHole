@@ -74,6 +74,11 @@ struct pos
     }
 };
 
+static pos operator+(const pos& ipos1, const pos& ipos2)
+{
+    return pos(ipos1.row + ipos2.row, ipos1.col + ipos2.col);
+}
+
 static bool operator!=(const pos& ipos1, const pos& ipos2)
 {
     return (ipos1.row != ipos2.row || ipos1.col != ipos2.col);

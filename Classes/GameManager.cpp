@@ -237,11 +237,9 @@ bool GameManager::checkPos(const pos& p)
         return true;
 }
 
-check_collision GameManager::getCollisionPos(const pos& p) const
+array<pos, collision_pos::HAS> getListToCheckCol(const pos& p)
 {
-    check_collision result;
-	result.fill(false);
-    pos check[] = {             //Order by collision_pos enum
+    array<pos, collision_pos::HAS> check = { //Order by collision_pos enum
         pos(p.row + 1, p.col),  //Top
         pos(p.row - 1, p.col),  //Bot...
         pos(p.row, p.col - 1),
@@ -249,12 +247,31 @@ check_collision GameManager::getCollisionPos(const pos& p) const
         pos(p.row + 1, p.col - 1),
         pos(p.row + 1, p.col + 1),
         pos(p.row - 1, p.col - 1),
-        pos(p.row - 1, p.col + 1),   //Bot_right
-        pos(p.row - 1, p.col)   //Axis
+        pos(p.row - 1, p.col + 1),
+        pos(p.row, p.col)   //Axis
     };
+    
+    return check;
+}
+
+check_collision GameManager::getCollisionPos(const pos& p) const
+{
+    check_collision result;
+	result.fill(false);
+    
+    auto check = getListToCheckCol(p);
     
     for(int i = 0; i < collision_pos::HAS; i++)
     {
+        if(i == collision_pos::AXIS)
+        {
+            if(check[i].row == _axis.row)   //check special case - axis
+            {
+                result[i] = true;
+            }
+            continue;
+        }
+        
         if(Board::girdObj->getObj(check[i]))
             result[i] = true;
     }
@@ -277,32 +294,25 @@ check_collision GameManager::getCollisionPos(const shared_ptr<Container>& contai
 	for (auto& obj : container->getObjs())
 	{
 		pos p = obj->getPosition();
-		pos check[] = {
-			pos(p.row + 1, p.col),
-			pos(p.row - 1, p.col),
-			pos(p.row, p.col - 1),
-			pos(p.row, p.col + 1),
-			pos(p.row + 1, p.col - 1),
-			pos(p.row + 1, p.col + 1),
-			pos(p.row - 1, p.col - 1),
-			pos(p.row - 1, p.col + 1),
-            pos(p.row - 1, p.col)
-		};
         
-        //check with Axis
-		for (int i = 0; i < collision_pos::HAS; i++)    //skip check with Axis
+        auto check = getListToCheckCol(p);
+        
+		for (int i = 0; i < collision_pos::HAS; i++)
 		{
 			pos poscheck = check[i];
 
+            if(i == collision_pos::AXIS && poscheck.row == _axis.row)   //check special case - axis
+            {
+                result[i] = true;
+                continue;
+            }
+            
             bool isContain = (std::find(posskips.begin(), posskips.end(), poscheck) != posskips.end());
 
 			if (!isContain)
 			{
-                if(i == collision_pos::AXIS && poscheck.row == _axis.row)
+                if (Board::girdObj->getObj(poscheck))
                     result[i] = true;
-                else if (Board::girdObj->getObj(poscheck))
-                    result[i] = true;
-                
 			}
 		}
 	}
@@ -338,32 +348,25 @@ check_collision GameManager::getCollisionPos(const unique_ptr<Hole>& hole) const
 	for (auto& obj : hole->getObjs())
 	{
 		pos p = obj->getPosition();
-		CCLOG("Check pos obj in hole %d-%d", p.row, p.col);
-		pos check[] = {
-			pos(p.row + 1, p.col),
-			pos(p.row - 1, p.col),
-			pos(p.row, p.col - 1),
-			pos(p.row, p.col + 1),
-			pos(p.row + 1, p.col - 1),
-			pos(p.row + 1, p.col + 1),
-			pos(p.row - 1, p.col - 1),
-			pos(p.row - 1, p.col + 1),
-			pos(p.row - 1, p.col)
-		};
+		//CCLOG("Check pos obj in hole %d-%d", p.row, p.col);
+        auto check = getListToCheckCol(p);
 
 		//check with Axis
 		for (int i = 0; i < collision_pos::HAS; i++)    //skip check with Axis
 		{
 			pos poscheck = check[i];
+            if(i == collision_pos::AXIS && poscheck.row == _axis.row)   //check special case - axis
+            {
+                result[i] = true;
+                continue;
+            }
 
 			bool isContain = (std::find(posskips.begin(), posskips.end(), poscheck) != posskips.end());
 
 			if (!isContain)
 			{
 				//check special case
-				if (i == collision_pos::AXIS && poscheck.row == _axis.row)
-					result[i] = true;
-				else if (i == collision_pos::BOT && poscheck.row < 0)
+                if (i == collision_pos::BOT && poscheck.row < 0)
 					result[i] = true;
 				else if (i == collision_pos::LEFT && poscheck.col < 0)
 					result[i] = true;

@@ -4,7 +4,7 @@
 class Skill;
 class Obj;
 
-class Hole
+class Hole : public enable_shared_from_this<Hole>
 {
 	Node* _node;
 	Sprite* _represent;

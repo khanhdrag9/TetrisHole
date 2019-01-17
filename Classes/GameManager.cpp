@@ -67,7 +67,11 @@ void GameManager::update(float dt)
 				moveByHole(pos(0, 1));
 			_holeDirect = direction::NONE;
 		}
+        
+        //use skill
+        _hole->update(dt);
 	}
+    
 
 	//move container
 	if (_count_time >= _interval_time)

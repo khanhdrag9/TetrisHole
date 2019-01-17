@@ -21,13 +21,15 @@ public:
             Board::girdObj->getObj(_position) = nullptr;
             Board::girdObj->getObj(p) = shared_from_this();
             
-            _position = p;
-            
             if(useRealPos)
             {
-                Vec2 realPos = Board::gridPos->realPos(_position);
+                Vec2 increRealPos = Board::gridPos->realPos(p) - Board::gridPos->realPos(_position);
+                //Vec2 realPos = Board::gridPos->realPos(_position);
+                Vec2 realPos = sprite->getPosition() + increRealPos;
                 sprite->setPosition(realPos);
             }
+            
+            _position = p;
         }
     }
     inline const pos& getPosition() const

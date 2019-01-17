@@ -72,7 +72,8 @@ void Hole::setPosition(const pos& p)
 
 void Hole::update(float dt)
 {
-
+    if(_skill)
+        _skill->update(*this ,dt);
 }
 
 void Hole::release()

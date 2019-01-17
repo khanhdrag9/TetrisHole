@@ -31,6 +31,7 @@ GameManager::GameManager():
     _createMg = make_unique<CreateManager>();
     _containerMg = make_unique<ContainerManager>();
 	_hole = make_unique<Hole>();
+	
 }
 
 GameManager::~GameManager()
@@ -50,16 +51,23 @@ void GameManager::update(float dt)
 		return;
 	}
     
-    if(_holeDirect == direction::LEFT)
-    {
-        moveByHole(pos(0, -1));
-        _holeDirect = direction::NONE;
-    }
-    else if(_holeDirect == direction::RIGHT)
-    {
-        moveByHole(pos(0, 1));
-        _holeDirect = direction::NONE;
-    }
+	//hole move
+	if(_hole)
+	{
+		check_collision holeCol = getCollisionPos(_hole);
+		if (_holeDirect == direction::LEFT)
+		{
+			if(holeCol[collision_pos::LEFT] == false)
+				moveByHole(pos(0, -1));
+			_holeDirect = direction::NONE;
+		}
+		else if (_holeDirect == direction::RIGHT)
+		{
+			if (holeCol[collision_pos::RIGHT] == false)
+				moveByHole(pos(0, 1));
+			_holeDirect = direction::NONE;
+		}
+	}
 
 	//move container
 	if (_count_time >= _interval_time)
@@ -77,7 +85,7 @@ void GameManager::update(float dt)
 					for (auto& o : (*it)->getObjs())	//add obj to hole
 					{
 						_hole->collect(o);
-                        _objsUnContainer.push_back(o);
+                        //_objsUnContainer.push_back(o);
                         
                         Vec2 positionO = Board::gridPos->realPos(o->getPosition());
                         //Vec2 posInNode =
@@ -134,14 +142,14 @@ void GameManager::moveByHole(const pos& incre)
     {
         _hole->setPosition(_hole->getPosition() + incre);
         
-        for(auto& o : _objsUnContainer)
+        /*for(auto& o : _objsUnContainer)
         {
             if(o)
             {
                 pos newpos = o->getPosition() + incre;
                 o->setPosition(newpos, false);
             }
-        }
+        }*/
     }
     else
     {
@@ -154,6 +162,9 @@ void GameManager::setNodeParrent(Node* node)
     _current = node;
 	_hole->init(node);
     _hole->setPosition(_axis);
+	Sprite* repre = Sprite::create(HOLE_REPRE);
+	repre->setScale(0.2);
+	_hole->setRepresent(repre);
     
 #if ENABLE_DEBUG_GRID
     pos sizeBoard = Board::gridPos->getSize();
@@ -229,7 +240,7 @@ bool GameManager::checkPos(const pos& p)
 check_collision GameManager::getCollisionPos(const pos& p) const
 {
     check_collision result;
-    
+	result.fill(false);
     pos check[] = {             //Order by collision_pos enum
         pos(p.row + 1, p.col),  //Top
         pos(p.row - 1, p.col),  //Bot...
@@ -246,8 +257,6 @@ check_collision GameManager::getCollisionPos(const pos& p) const
     {
         if(Board::girdObj->getObj(check[i]))
             result[i] = true;
-        else
-            result[i] = false;
     }
     
     return result;
@@ -256,7 +265,7 @@ check_collision GameManager::getCollisionPos(const pos& p) const
 check_collision GameManager::getCollisionPos(const shared_ptr<Container>& container) const
 {
 	check_collision result;
-
+	result.fill(false);
 	list<pos> posskips;	//skip Obj in same container
 	for (auto& obj : container->getObjs())
 	{
@@ -293,9 +302,79 @@ check_collision GameManager::getCollisionPos(const shared_ptr<Container>& contai
                     result[i] = true;
                 else if (Board::girdObj->getObj(poscheck))
                     result[i] = true;
-                else
-                    result[i] = false;
                 
+			}
+		}
+	}
+
+	return result;
+}
+
+check_collision GameManager::getCollisionPos(const unique_ptr<Hole>& hole) const
+{
+	check_collision result;
+	result.fill(false);
+	list<pos> posskips;	//skip Obj in same container
+	for (auto& obj : hole->getObjs())
+	{
+		if (obj)
+			posskips.push_back(obj->getPosition());
+	}
+
+	//check of node itself
+	{
+		pos holepos = hole->getPosition();
+		if (holepos.col <= 0)
+			result[collision_pos::LEFT] = true;
+		else if(holepos.col >= Board::gridPos->getSize().col - 1)
+			result[collision_pos::RIGHT] = true;
+		else if(holepos.row <= 0)
+			result[collision_pos::BOT] = true;
+		else if(holepos.row >= Board::gridPos->getSize().row - 1)
+			result[collision_pos::TOP] = true;
+	}
+
+	//check collision of contaienr
+	for (auto& obj : hole->getObjs())
+	{
+		pos p = obj->getPosition();
+		CCLOG("Check pos obj in hole %d-%d", p.row, p.col);
+		pos check[] = {
+			pos(p.row + 1, p.col),
+			pos(p.row - 1, p.col),
+			pos(p.row, p.col - 1),
+			pos(p.row, p.col + 1),
+			pos(p.row + 1, p.col - 1),
+			pos(p.row + 1, p.col + 1),
+			pos(p.row - 1, p.col - 1),
+			pos(p.row - 1, p.col + 1),
+			pos(p.row - 1, p.col)
+		};
+
+		//check with Axis
+		for (int i = 0; i < collision_pos::HAS; i++)    //skip check with Axis
+		{
+			pos poscheck = check[i];
+
+			bool isContain = (std::find(posskips.begin(), posskips.end(), poscheck) != posskips.end());
+
+			if (!isContain)
+			{
+				//check special case
+				if (i == collision_pos::AXIS && poscheck.row == _axis.row)
+					result[i] = true;
+				else if (i == collision_pos::BOT && poscheck.row < 0)
+					result[i] = true;
+				else if (i == collision_pos::LEFT && poscheck.col < 0)
+					result[i] = true;
+				else if (i == collision_pos::RIGHT && poscheck.col >= Board::gridPos->getSize().col)
+					result[i] = true;
+				else if (i == collision_pos::TOP && poscheck.col >= Board::gridPos->getSize().row)
+					result[i] = true;
+				//check normal case
+				else if (Board::girdObj->getObj(poscheck))
+					result[i] = true;
+
 			}
 		}
 	}

@@ -25,6 +25,20 @@ void Hole::init(Node* parrent)
 	parrent->addChild(_node);
 }
 
+void Hole::setRepresent(Sprite* sprite)
+{
+	if (_node)
+	{
+		_represent = sprite;
+		_node->addChild(_represent);
+		_represent->setPosition(0, 0);
+	}
+	else
+	{
+		CCLOG("Hole Node is null so can not set represent for the node");
+	}
+}
+
 void Hole::collect(shared_ptr<Obj> obj)
 {
     obj->sprite->retain();
@@ -34,16 +48,26 @@ void Hole::collect(shared_ptr<Obj> obj)
     
     Vec2 posInNode = _node->convertToNodeSpace(Board::gridPos->realPos(obj->getPosition()));
     obj->sprite->setPosition(posInNode);
+
+	_objsUnContainer.push_back(obj);
 }
 
-void Hole::setPosition(const pos& pos)
+void Hole::setPosition(const pos& p)
 {
-    _position = pos;
+	pos incre = p - _position;
+    _position = p;
     Vec2 realpos = Board::gridPos->realPos(_position);
     
     _node->setPosition(realpos);
-    if(_represent)
-        _represent->setPosition(realpos);
+
+	for (auto& o : _objsUnContainer)
+	{
+		if (o)
+		{
+			pos newpos = o->getPosition() + incre;
+			o->setPosition(newpos, false);
+		}
+	}
 }
 
 void Hole::update(float dt)

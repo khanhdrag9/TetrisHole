@@ -23,6 +23,7 @@ USING_NS_CC;
 #define ROW 40
 #define ENABLE_DEBUG_GRID 1
 #define FONT_ARIAL "fonts/arial.ttf"
+#define HOLE_REPRE "HoleTest.png"
 
 struct pos
 {
@@ -77,6 +78,11 @@ struct pos
 static pos operator+(const pos& ipos1, const pos& ipos2)
 {
     return pos(ipos1.row + ipos2.row, ipos1.col + ipos2.col);
+}
+
+static pos operator-(const pos& ipos1, const pos& ipos2)
+{
+	return pos(ipos1.row - ipos2.row, ipos1.col - ipos2.col);
 }
 
 static bool operator!=(const pos& ipos1, const pos& ipos2)

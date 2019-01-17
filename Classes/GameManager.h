@@ -40,7 +40,7 @@ class GameManager : public Singleton<GameManager>
 	unique_ptr<Hole> _hole;
     
     //vector<shared_ptr<Container>> _containers;
-	vector<shared_ptr<Obj>> _objsUnContainer;
+	//vector<shared_ptr<Obj>> _objsUnContainer;
 
 	bool _createdContainer;
     
@@ -79,5 +79,6 @@ private:
     bool checkPos(const pos& p);
     check_collision getCollisionPos(const pos& p) const;
 	check_collision getCollisionPos(const shared_ptr<Container>& container) const;
+	check_collision getCollisionPos(const unique_ptr<Hole>& hole) const;
 
 };

@@ -18,7 +18,7 @@ public:
     {
         if(_position.row > -1 && _position.col > -1)
         {
-            Board::girdObj->getObj(_position) = nullptr;
+            //Board::girdObj->getObj(_position) = nullptr;
             Board::girdObj->getObj(p) = shared_from_this();
             
             if(useRealPos)

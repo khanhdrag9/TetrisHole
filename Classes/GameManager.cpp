@@ -90,9 +90,7 @@ void GameManager::update(float dt)
 					{
 						_hole->collect(o);
                         //_objsUnContainer.push_back(o);
-                        
-                        Vec2 positionO = Board::gridPos->realPos(o->getPosition());
-                        //Vec2 posInNode =
+                       
 					}
 
                     it = _containerMg->getContainers().erase(it);   //delete from ContainerManager

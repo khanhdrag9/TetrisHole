@@ -60,6 +60,12 @@ void Hole::setPosition(const pos& p)
     
     _node->setPosition(realpos);
 
+	//set oldpos = null to reset board 
+	for (auto& obj : _objsUnContainer)
+	{
+		Board::girdObj->getObj(obj->getPosition()) = nullptr;
+	}
+
 	for (auto& o : _objsUnContainer)
 	{
 		if (o)

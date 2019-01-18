@@ -40,6 +40,12 @@ void Container::setPosition(const pos& p)
     pos curpos = _objs[axis]->getPosition();
     pos posincre = pos(p.row - curpos.row, p.col - curpos.col);
     
+	//set oldpos = null to reset board 
+	for (auto& obj : _objs)
+	{
+		Board::girdObj->getObj(obj->getPosition()) = nullptr;
+	}
+
     for(int i = 0; i < _objs.size(); i++)
     {
         pos op = _objs[i]->getPosition();

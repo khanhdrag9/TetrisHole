@@ -6,6 +6,7 @@ class Obj;
 class Container
 {
     
+protected:
     vector<shared_ptr<Obj>> _objs;
     
 public:

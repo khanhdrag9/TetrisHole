@@ -3,7 +3,8 @@
 
 CreateManager::CreateManager()
 {
-    
+    //create framecache
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("Circles.plist");
 }
 
 CreateManager::~CreateManager()

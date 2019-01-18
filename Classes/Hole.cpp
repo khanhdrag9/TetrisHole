@@ -1,6 +1,7 @@
 #include "Hole.h"
 #include "Obj.h"
 #include "Skill.h"
+#include "Templates.h"
 
 Hole::Hole(Node* parrent):
 	_node(nullptr),

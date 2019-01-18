@@ -1,6 +1,7 @@
 #include "Container.h"
 #include "Obj.h"
 #include "Board.h"
+#include "Support.h"
 
 Container::Container(const int& number)
 {
@@ -10,6 +11,32 @@ Container::Container(const int& number)
 Container::~Container()
 {
     release();
+}
+
+std::pair<Obj::Color, string> getColor()
+{
+    int random = support::getRandom((int)Obj::Color::BLUE, (int)Obj::Color::YELLOW);
+ 
+    std::pair<Obj::Color, string> result;
+    result.first = (Obj::Color)random;
+    
+    switch (result.first)
+    {
+        case Obj::Color::BLUE:
+            result.second = "Blue.png";
+            break;
+        case Obj::Color::RED:
+            result.second = "Red.png";
+            break;
+        case Obj::Color::YELLOW:
+            result.second = "Yellow.png";
+            break;
+        default:
+            CCLOG("Fail get random Color");
+            break;
+    }
+    
+    return result;
 }
 
 void Container::init(const int &number)
@@ -24,12 +51,12 @@ void Container::init(const int &number)
     
     for(int i = 0; i < number; ++i)
     {
-        _objs.emplace_back(make_shared<Obj>("Circle.png"));
-        
+        auto mesh = getColor();
+        _objs.emplace_back(make_shared<Obj>(mesh.second.c_str(), mesh.first));
         float scale = Board::sideObj / (float)_objs[i]->sprite->getContentSize().width ;
         _objs[i]->sprite->setScale(scale);
-        
         _objs[i]->setPosition(*listp.begin(), true);
+        
         listp.pop_front();
     }
 }

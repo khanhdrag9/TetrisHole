@@ -8,9 +8,15 @@
 #include "Obj.h"
 
 
-Obj::Obj(const char *path):_position(pos(0, 0))
+Obj::Obj(const char *path, Color color):
+    _position(pos(0, 0)),
+    _color(color)
 {
     sprite = Sprite::create(path);
+    if(!sprite)
+    {
+        sprite = Sprite::createWithSpriteFrameName(path);
+    }
     sprite->setPosition(Board::gridPos->realPos(_position));
     sprite->retain();
 }

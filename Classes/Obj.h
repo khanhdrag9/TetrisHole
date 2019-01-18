@@ -7,9 +7,20 @@ class Board;
 
 class Obj : public enable_shared_from_this<Obj>
 {
-	pos _position;
 public:
-    Obj(const char* path);
+    enum class Color : int
+    {
+        BLUE,
+        RED,
+        YELLOW
+    };
+    
+protected:
+	pos _position;
+    Color _color;
+    
+public:
+    Obj(const char* path, Color color);
     virtual ~Obj();
     
     Sprite* sprite;
@@ -35,5 +46,9 @@ public:
     inline const pos& getPosition() const
     {
         return _position;
+    }
+    inline const Color& getColor() const
+    {
+        return _color;
     }
 };

@@ -25,6 +25,17 @@ void Hole::init(Node* parrent)
 	parrent->addChild(_node);
 }
 
+void Hole::initSkill(bool reset, const int& speed)
+{
+	if (reset)
+		_skill = make_unique<Skill>();
+	
+	if (_skill)
+		_skill->setSpeed(speed);
+	else
+		CCLOG("Cannot set speed when skill is null!");
+}
+
 void Hole::setRepresent(Sprite* sprite)
 {
 	if (_node)

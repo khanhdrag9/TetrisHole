@@ -14,34 +14,60 @@ Skill::~Skill()
 
 }
 
+void Skill::setSpeed(const int& speed)
+{
+	_speed = speed;
+}
+
 void Skill::update(Hole& hole, float dt)
 {
     pos axis = hole.getPosition();
     
+	list<pos> move;
+
     for(auto& obj : hole.getObjs())
     {
         pos objpos = obj->getPosition();
-        pos axis = GameManager::getInstance()->_axis;
         
         auto listCol = GameManager::getInstance()->getCollisionPos(objpos);
         
-        if(objpos.row > axis.row && !listCol[collision_pos::LEFT])
+		//set oldpos = null to reset board 
+		/*for (auto& obj : hole.getObjs())
+		{
+			Board::girdObj->getObj(obj->getPosition()) = nullptr;
+		}*/
+
+		pos newpos = objpos;
+        if(objpos.row > axis.row && !listCol[collision_pos::BOT])
         {
-            //obj->setPosition(<#const pos &p#>, bool useRealPos)
+			newpos.row -= _speed;
         }
-        else if(objpos.row < axis.row)
+        else if(objpos.row < axis.row && !listCol[collision_pos::TOP])
         {
-            
-        }
-        
-        if(objpos.col > axis.col)
-        {
-            
-        }
-        else if(objpos.col < axis.col)
-        {
-            
+			newpos.row += _speed;
         }
         
+        if(objpos.col > axis.col && !listCol[collision_pos::LEFT])
+        {
+			newpos.col -= _speed;
+        }
+        else if(objpos.col < axis.col && !listCol[collision_pos::RIGHT])
+        {
+			newpos.col += _speed;
+        }
+		move.push_back(newpos);
+		//obj->setPosition(newpos, true);
     }
+
+	//set oldpos = null to reset board 
+	for (auto& obj : hole.getObjs())
+	{
+		Board::girdObj->getObj(obj->getPosition()) = nullptr;
+	}
+
+	for (auto& obj : hole.getObjs())
+	{
+		obj->setPosition(move.front(), true);
+		move.pop_front();
+	}
 }

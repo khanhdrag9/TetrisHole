@@ -17,6 +17,7 @@ public:
 	~Hole();
 
 	void init(Node* parrent);
+	void initSkill(bool reset, const int& speed);
 	void setRepresent(Sprite* sprite);
 	void collect(shared_ptr<Obj> obj);
 	void setPosition(const pos& pos);

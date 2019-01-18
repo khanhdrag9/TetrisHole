@@ -14,7 +14,7 @@ GameManager::GameManager():
 	_createdContainer(false),
 	_hole(nullptr),
 	_count_time(0.f),
-	_interval_time(0.3f),
+	_interval_time(0.15f),
     _holeDirect(direction::NONE)
 {
     _screenSize = Director::getInstance()->getVisibleSize();
@@ -31,7 +31,7 @@ GameManager::GameManager():
     _createMg = make_unique<CreateManager>();
     _containerMg = make_unique<ContainerManager>();
 	_hole = make_unique<Hole>();
-	
+
 }
 
 GameManager::~GameManager()
@@ -167,6 +167,7 @@ void GameManager::setNodeParrent(Node* node)
 	Sprite* repre = Sprite::create(HOLE_REPRE);
 	repre->setScale(0.2);
 	_hole->setRepresent(repre);
+	_hole->initSkill(true, 1);
     
 #if ENABLE_DEBUG_GRID
     pos sizeBoard = Board::gridPos->getSize();

@@ -76,7 +76,9 @@ void Skill::update(Hole& hole, float dt)
 //        }
         
         if(obj)
+        {
             obj->setPosition(move.front(), true);
+        }
 		
 		move.pop_front();
 	}

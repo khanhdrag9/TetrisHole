@@ -90,6 +90,18 @@ void Hole::setPosition(const pos& p)
 
 void Hole::update(float dt)
 {
+    for(int i =0; i < _objsUnContainer.size();)
+    {
+        if(Board::girdObj->getObj(_objsUnContainer[i]->getPosition()) == nullptr)
+        {
+            _objsUnContainer.erase(_objsUnContainer.begin() + i);
+        }
+        else
+        {
+            ++i;
+        }
+    }
+
     if(_skill)
         _skill->update(*this ,dt);
 }

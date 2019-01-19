@@ -9,7 +9,7 @@ class Container;
 class Hole;
 class Obj;
 
-enum collision_pos  //Has is represent for the number of type collision
+enum collision_pos : int //Has is represent for the number of type collision
 {
     TOP = 0,
     BOT,
@@ -31,6 +31,7 @@ enum class direction
 };
 
 using check_collision = array<bool, (int)collision_pos::HAS>;
+using scan_direct_obj = map<collision_pos, list<pos>>;
 
 class GameManager : public Singleton<GameManager>
 {
@@ -61,6 +62,9 @@ public:
     void setNodeParrent(Node* node);
     
 	void update(float dt);
+    void scan();
+    void scanScore(const shared_ptr<Obj>& objstart, collision_pos direct, scan_direct_obj& beforeObjs);
+    void deleteScoreObj(const pos& axisObjPos, scan_direct_obj& beforeObjs);
     
     bool touchBegan(Touch* touch, Event* event);
     void touchMoved(Touch* touch, Event* event);
@@ -74,6 +78,7 @@ public:
 	pos _createBot;
 	pos _axis;
     
+    static scan_direct_obj defaultScanDirectObj();
 private:
     
     void addChild(shared_ptr<Container> container);

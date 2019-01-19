@@ -9,7 +9,7 @@ CreateManager::CreateManager()
 
 CreateManager::~CreateManager()
 {
-    
+    SpriteFrameCache::getInstance()->removeSpriteFrames();
 }
 
 shared_ptr<Container> CreateManager::createContainer(const CreateManager::container_type &type)

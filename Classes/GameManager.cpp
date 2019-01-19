@@ -70,6 +70,7 @@ void GameManager::update(float dt)
         
         //use skill
         _hole->update(dt);
+        scan();
 	}
     
 
@@ -240,9 +241,11 @@ bool GameManager::checkPos(const pos& p)
         return true;
 }
 
-array<pos, collision_pos::HAS> getListToCheckCol(const pos& p)
+//array<pos, collision_pos::HAS> getListToCheckCol(const pos& p)
+vector<pos> getListToCheckCol(const pos& p)
 {
-    array<pos, collision_pos::HAS> check = { //Order by collision_pos enum
+   // array<pos, collision_pos::HAS> check = { //Order by collision_pos enum
+    vector<pos> check = {
         pos(p.row + 1, p.col),  //Top
         pos(p.row - 1, p.col),  //Bot...
         pos(p.row, p.col - 1),
@@ -388,6 +391,73 @@ check_collision GameManager::getCollisionPos(const unique_ptr<Hole>& hole) const
 	return result;
 }
 
+void GameManager::scan()
+{
+    for (auto& obj : _hole->getObjs())
+    {
+        scan_direct_obj sdo = GameManager::defaultScanDirectObj();
+        GameManager::getInstance()->scanScore(obj, collision_pos::AXIS, sdo);
+        GameManager::getInstance()->deleteScoreObj(obj->getPosition(), sdo);
+    }
+}
+
+void GameManager::scanScore(const shared_ptr<Obj>& objstart, collision_pos direct, scan_direct_obj& beforeObjs)
+{
+    pos objpos = objstart->getPosition();
+    
+    vector<pos> aroundpos;
+    {
+        auto poscheck = getListToCheckCol(objpos);
+        
+        if(direct == collision_pos::AXIS)
+        {
+            aroundpos.swap(poscheck);
+            aroundpos.pop_back();   //delete pos at axis - this is not used!
+        }
+        else
+        {
+            aroundpos.push_back(poscheck[direct]);
+        }
+    }
+    
+    list<pair<collision_pos, shared_ptr<Obj>>> listObjAround;
+    
+    for(int i = 0; i < aroundpos.size(); ++i)
+    {
+        shared_ptr<Obj> indexobj = Board::girdObj->getObj(aroundpos[i]);
+        if(indexobj)
+        {
+            if(indexobj->getColor() == objstart->getColor())
+            {
+                beforeObjs[(collision_pos)i].push_back(indexobj->getPosition());
+                listObjAround.emplace_back((collision_pos)i, indexobj);
+            }
+        }
+    }
+    
+    if(listObjAround.size() > 0)
+    {
+        for(auto& objpair : listObjAround)
+        {
+            scanScore(objpair.second, objpair.first, beforeObjs);
+        }
+    }
+}
+
+void GameManager::deleteScoreObj(const pos& axisObjPos, scan_direct_obj& beforeObjs)
+{
+    for(auto& sdo : beforeObjs)
+    {
+        if(sdo.second.size() >= 3)
+        {
+            for(auto& p : sdo.second)
+            {
+                Board::girdObj->getObj(p) = nullptr;
+            }
+        }
+    }
+}
+
 void GameManager::touchEnded(cocos2d::Touch *touch, cocos2d::Event *event)
 {
     
@@ -428,3 +498,14 @@ bool GameManager::touchBegan(cocos2d::Touch *touch, cocos2d::Event *event)
     return true;
 }
 
+scan_direct_obj GameManager::defaultScanDirectObj()
+{
+    scan_direct_obj sdo;
+    
+    for(int i = 0; i < collision_pos::HAS; i++)
+    {
+        sdo[(collision_pos)i] = list<pos>();
+    }
+    
+    return sdo;
+}

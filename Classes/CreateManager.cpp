@@ -22,7 +22,7 @@ CreateManager::container_type CreateManager::getRandomContainerKey()
 {
     container_type type;
     
-    type = container_type::TWO;
+    type = container_type::THREE;
     
     return type;
 }

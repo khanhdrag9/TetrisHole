@@ -21,7 +21,7 @@ USING_NS_CC;
 
 #define COL 20
 #define ROW 40
-#define ENABLE_DEBUG_GRID 0
+#define ENABLE_DEBUG_GRID 1
 #define FONT_ARIAL "fonts/arial.ttf"
 #define HOLE_REPRE "HoleTest.png"
 

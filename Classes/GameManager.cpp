@@ -54,23 +54,7 @@ void GameManager::update(float dt)
 	//hole move
 	if(_hole)
 	{
-		check_collision holeCol = getCollisionPos(_hole);
-		if (_holeDirect == direction::LEFT)
-		{
-			if(holeCol[collision_pos::LEFT] == false)
-				moveByHole(pos(0, -1));
-			_holeDirect = direction::NONE;
-		}
-		else if (_holeDirect == direction::RIGHT)
-		{
-			if (holeCol[collision_pos::RIGHT] == false)
-				moveByHole(pos(0, 1));
-			_holeDirect = direction::NONE;
-		}
-        
-        //use skill
-        _hole->update(dt);
-        scan();
+		
 	}
     
 
@@ -128,15 +112,7 @@ void GameManager::update(float dt)
 void GameManager::moveByContainer(shared_ptr<Container> container, const pos& incre)
 {
 	//calculate new pos
-	pos newpos = container->getPosition();
-	if (newpos.row < 0)
-	{
-		CCLOG("Curpos is not available!");
-		return;
-	}
-
-	newpos = newpos + incre;
-	container->setPosition(newpos);
+	
 }
 
 void GameManager::moveByHole(const pos& incre)
@@ -202,7 +178,9 @@ void GameManager::createContainer()
     {
         auto container = _createMg->createRandomContainer();
 		container->setPosition(_createTop);
-
+        
+        container->_node->runAction(MoveTo::create(5, Board::gridPos->realPos(_axis)));
+        
 		list.push_back(container);
     }
 
@@ -220,10 +198,11 @@ void GameManager::addChild(shared_ptr<Container> container)
 {
 	if (_current)
 	{
-		for (auto& o : container->getObjs())
-		{
-			_current->addChild(o->sprite);
-		}
+//        for (auto& o : container->getObjs())
+//        {
+//            _current->addChild(o->sprite);
+//        }
+        _current->addChild(container->_node);
 	}
 	else
 	{
@@ -289,38 +268,17 @@ check_collision GameManager::getCollisionPos(const shared_ptr<Container>& contai
 {
 	check_collision result;
 	result.fill(false);
-	list<pos> posskips;	//skip Obj in same container
+	
 	for (auto& obj : container->getObjs())
 	{
-        if(obj)
-            posskips.push_back(obj->getPosition());
+        
 	}
 
 	//check collision of contaienr
 	for (auto& obj : container->getObjs())
 	{
-		pos p = obj->getPosition();
+		
         
-        auto check = getListToCheckCol(p);
-        
-		for (int i = 0; i < collision_pos::HAS; i++)
-		{
-			pos poscheck = check[i];
-
-            if(i == collision_pos::AXIS && poscheck.row == _axis.row)   //check special case - axis
-            {
-                result[i] = true;
-                continue;
-            }
-            
-            bool isContain = (std::find(posskips.begin(), posskips.end(), poscheck) != posskips.end());
-
-			if (!isContain)
-			{
-                if (Board::girdObj->getObj(poscheck))
-                    result[i] = true;
-			}
-		}
 	}
 
 	return result;
@@ -330,62 +288,22 @@ check_collision GameManager::getCollisionPos(const unique_ptr<Hole>& hole) const
 {
 	check_collision result;
 	result.fill(false);
-	list<pos> posskips;	//skip Obj in same container
+
 	for (auto& obj : hole->getObjs())
 	{
-		if (obj)
-			posskips.push_back(obj->getPosition());
+		
 	}
 
 	//check of node itself
 	{
-		pos holepos = hole->getPosition();
-		if (holepos.col <= 0)
-			result[collision_pos::LEFT] = true;
-		else if(holepos.col >= Board::gridPos->getSize().col - 1)
-			result[collision_pos::RIGHT] = true;
-		else if(holepos.row <= 0)
-			result[collision_pos::BOT] = true;
-		else if(holepos.row >= Board::gridPos->getSize().row - 1)
-			result[collision_pos::TOP] = true;
+		
 	}
 
 	//check collision of contaienr
 	for (auto& obj : hole->getObjs())
 	{
-		pos p = obj->getPosition();
-		//CCLOG("Check pos obj in hole %d-%d", p.row, p.col);
-        auto check = getListToCheckCol(p);
-
-		//check with Axis
-		for (int i = 0; i < collision_pos::HAS; i++)    //skip check with Axis
-		{
-			pos poscheck = check[i];
-            if(i == collision_pos::AXIS && poscheck.row == _axis.row)   //check special case - axis
-            {
-                result[i] = true;
-                continue;
-            }
-
-			bool isContain = (std::find(posskips.begin(), posskips.end(), poscheck) != posskips.end());
-
-			if (!isContain)
-			{
-				//check special case
-                if (i == collision_pos::BOT && poscheck.row < 0)
-					result[i] = true;
-				else if (i == collision_pos::LEFT && poscheck.col < 0)
-					result[i] = true;
-				else if (i == collision_pos::RIGHT && poscheck.col >= Board::gridPos->getSize().col)
-					result[i] = true;
-				else if (i == collision_pos::TOP && poscheck.col >= Board::gridPos->getSize().row)
-					result[i] = true;
-				//check normal case
-				else if (Board::girdObj->getObj(poscheck))
-					result[i] = true;
-
-			}
-		}
+		
+		
 	}
 
 	return result;
@@ -393,69 +311,17 @@ check_collision GameManager::getCollisionPos(const unique_ptr<Hole>& hole) const
 
 void GameManager::scan()
 {
-    for (auto& obj : _hole->getObjs())
-    {
-        scan_direct_obj sdo = GameManager::defaultScanDirectObj();
-        GameManager::getInstance()->scanScore(obj, collision_pos::AXIS, sdo);
-        GameManager::getInstance()->deleteScoreObj(obj->getPosition(), sdo);
-    }
+    
 }
 
 void GameManager::scanScore(const shared_ptr<Obj>& objstart, collision_pos direct, scan_direct_obj& beforeObjs)
 {
-    pos objpos = objstart->getPosition();
     
-    vector<pos> aroundpos;
-    {
-        auto poscheck = getListToCheckCol(objpos);
-        
-        if(direct == collision_pos::AXIS)
-        {
-            aroundpos.swap(poscheck);
-            aroundpos.pop_back();   //delete pos at axis - this is not used!
-        }
-        else
-        {
-            aroundpos.push_back(poscheck[direct]);
-        }
-    }
-    
-    list<pair<collision_pos, shared_ptr<Obj>>> listObjAround;
-    
-    for(int i = 0; i < aroundpos.size(); ++i)
-    {
-        shared_ptr<Obj> indexobj = Board::girdObj->getObj(aroundpos[i]);
-        if(indexobj)
-        {
-            if(indexobj->getColor() == objstart->getColor())
-            {
-                beforeObjs[(collision_pos)i].push_back(indexobj->getPosition());
-                listObjAround.emplace_back((collision_pos)i, indexobj);
-            }
-        }
-    }
-    
-    if(listObjAround.size() > 0)
-    {
-        for(auto& objpair : listObjAround)
-        {
-            scanScore(objpair.second, objpair.first, beforeObjs);
-        }
-    }
 }
 
 void GameManager::deleteScoreObj(const pos& axisObjPos, scan_direct_obj& beforeObjs)
 {
-    for(auto& sdo : beforeObjs)
-    {
-        if(sdo.second.size() >= 3)
-        {
-            for(auto& p : sdo.second)
-            {
-                Board::girdObj->getObj(p) = nullptr;
-            }
-        }
-    }
+    
 }
 
 void GameManager::touchEnded(cocos2d::Touch *touch, cocos2d::Event *event)

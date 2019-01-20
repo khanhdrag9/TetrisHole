@@ -1,7 +1,5 @@
 #pragma once
 #include "Header.h"
-#include "Board.h"
-#include "Grid.h"
 
 class Board;
 
@@ -16,7 +14,6 @@ public:
     };
     
 protected:
-	pos _position;
     Color _color;
     
 public:
@@ -25,27 +22,11 @@ public:
     
     Sprite* sprite;
     
-    inline void setPosition(const pos& p, bool useRealPos)   //only available when not in hole
+    void setPosition(const Vec2& p);
+    
+    inline const Vec2& getPosition() const
     {
-        if(_position.row > -1 && _position.col > -1)
-        {
-            //Board::girdObj->getObj(_position) = nullptr;
-            Board::girdObj->getObj(p) = shared_from_this();
-            
-            if(useRealPos)
-            {
-                Vec2 increRealPos = Board::gridPos->realPos(p) - Board::gridPos->realPos(_position);
-                //Vec2 realPos = Board::gridPos->realPos(_position);
-                Vec2 realPos = sprite->getPosition() + increRealPos;
-                sprite->setPosition(realPos);
-            }
-            
-            _position = p;
-        }
-    }
-    inline const pos& getPosition() const
-    {
-        return _position;
+        return sprite->getPosition();
     }
     inline const Color& getColor() const
     {

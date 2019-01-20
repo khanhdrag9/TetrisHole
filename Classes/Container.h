@@ -17,8 +17,11 @@ public:
     void release();
     
     void setPosition(const pos& p);
-	pos getPosition() const;
+	const Vec2& getPosition() const;
     
     inline vector<shared_ptr<Obj>>& getObjs() { return _objs; }
     inline int getNumberObjs() {return (int)_objs.size();}
+    
+public:
+    Node* _node;
 };

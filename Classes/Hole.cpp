@@ -58,7 +58,7 @@ void Hole::collect(shared_ptr<Obj> obj)
     _node->addChild(obj->sprite);
     obj->sprite->autorelease();
     
-    Vec2 posInNode = _node->convertToNodeSpace(Board::gridPos->realPos(obj->getPosition()));
+    Vec2 posInNode = _node->convertToNodeSpace(obj->getPosition());
     obj->sprite->setPosition(posInNode);
 
 	_objsUnContainer.push_back(obj);
@@ -66,41 +66,12 @@ void Hole::collect(shared_ptr<Obj> obj)
 
 void Hole::setPosition(const pos& p)
 {
-	pos incre = p - _position;
-    _position = p;
-    Vec2 realpos = Board::gridPos->realPos(_position);
-    
-    _node->setPosition(realpos);
-
-	//set oldpos = null to reset board 
-	for (auto& obj : _objsUnContainer)
-	{
-		Board::girdObj->getObj(obj->getPosition()) = nullptr;
-	}
-
-	for (auto& o : _objsUnContainer)
-	{
-		if (o)
-		{
-			pos newpos = o->getPosition() + incre;
-			o->setPosition(newpos, false);
-		}
-	}
+	
 }
 
 void Hole::update(float dt)
 {
-    for(int i =0; i < _objsUnContainer.size();)
-    {
-        if(Board::girdObj->getObj(_objsUnContainer[i]->getPosition()) == nullptr)
-        {
-            _objsUnContainer.erase(_objsUnContainer.begin() + i);
-        }
-        else
-        {
-            ++i;
-        }
-    }
+    
 
     if(_skill)
         _skill->update(*this ,dt);

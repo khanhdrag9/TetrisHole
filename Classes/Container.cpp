@@ -1,5 +1,6 @@
 #include "Container.h"
 #include "Obj.h"
+#include "Grid.h"
 #include "Board.h"
 #include "Support.h"
 
@@ -41,13 +42,16 @@ std::pair<Obj::Color, string> getColor()
 
 void Container::init(const int &number)
 {
-    release();
+//    release();
     //create objs in container
     list<pos> listp = {
+        pos(0,-1),
         pos(0,0),
-        pos(0,1),
-        pos(0,2)
+        pos(0,1)
     };
+    Vec2 startp = Vec2(Board::sideObj, Board::sideObj) * 0.5f;
+    
+    _node = Node::create();
     
     for(int i = 0; i < number; ++i)
     {
@@ -55,42 +59,23 @@ void Container::init(const int &number)
         _objs.emplace_back(make_shared<Obj>(mesh.second.c_str(), mesh.first));
         float scale = Board::sideObj / (float)_objs[i]->sprite->getContentSize().width ;
         _objs[i]->sprite->setScale(scale);
-        _objs[i]->setPosition(*listp.begin(), true);
+        pos curpos = listp.front();
+        Vec2 realpos = startp + Vec2(Board::sideObj * curpos.col, Board::sideObj * curpos.row);
+        _objs[i]->setPosition(realpos);
         
+        _node->addChild(_objs[i]->sprite);
         listp.pop_front();
     }
 }
 
 void Container::setPosition(const pos& p)
 {
-    int axis = (int)_objs.size() / 2;
-    pos curpos = _objs[axis]->getPosition();
-    pos posincre = pos(p.row - curpos.row, p.col - curpos.col);
-    
-	//set oldpos = null to reset board 
-	for (auto& obj : _objs)
-	{
-		Board::girdObj->getObj(obj->getPosition()) = nullptr;
-	}
-
-    for(int i = 0; i < _objs.size(); i++)
-    {
-        pos op = _objs[i]->getPosition();
-        pos newp = op + posincre;
-        _objs[i]->setPosition(newp, true);
-        
-    }
+    _node->setPosition(Board::gridPos->realPos(p));
 }
 
-pos Container::getPosition() const
+const Vec2& Container::getPosition() const
 {
-	int axis = (int)_objs.size() / 2;
-	if (_objs.size() > axis)
-	{
-		return _objs[axis]->getPosition();
-	}
-	
-	return pos(-1, -1);
+    return _node->getPosition();
 }
 
 void Container::release()
@@ -98,6 +83,9 @@ void Container::release()
     for(auto& o : _objs)
         o = nullptr;
     _objs.clear();
+    
+    _node->removeFromParentAndCleanup(true);
+    CC_SAFE_DELETE(_node);
 }
 
 
